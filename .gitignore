@@ -1,0 +1,15 @@
+__pycache__
+itunes.json
+mpp.ini
+mpp.db
+search.py
+build
+dist
+*.egg-info
+app.py
+AppDir
+qt_material
+*.egg*
+_temp_home
+*.exe
+*.AppImage

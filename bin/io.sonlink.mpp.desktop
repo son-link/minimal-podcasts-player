@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Minimal Podcast Player
+Comment=Subscribe, listen and download your favorite podcasts, quickly and easily
+Icon=io.sonlink.mpp
+Exec=minimal-podcast-player
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;

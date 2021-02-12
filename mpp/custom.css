@@ -1,0 +1,13 @@
+#podcastsList::item {{
+    padding: 0;
+}}
+
+QHeaderView::section {{
+   font-size: 8pt;
+}}
+
+QPushButton:disabled,
+QPushButton:flat:disabled {{
+    background-color: {QTMATERIAL_SECONDARYCOLOR};
+    border: 0;
+}}
