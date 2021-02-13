@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="minimal-podcasts-player",
-    version="0.1.0.1",
+    version="0.1.1",
     description="Play your favorite YouTube's music videos and playlist",
     author="Alfonso Saavedra 'Son Link'",
     author_email='sonlink.dourden@gmail.com',

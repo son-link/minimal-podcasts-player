@@ -14,7 +14,6 @@ class Player(QMediaPlayer):
         self.queueData = []
         self.position = 0
         self.volume = 100
-        self.status = 0  # 0: stop, 1: playing/paused
 
         self.player.mediaStatusChanged.connect(self.qmp_mediaStatusChanged)
         self.player.positionChanged.connect(self.qmp_positionChanged)
@@ -58,7 +57,6 @@ class Player(QMediaPlayer):
         self.queueList.setCurrentIndex(0)
         self.parent.curPCLabel.setText(data['pc_title'])
         self.parent.curTrackName.setText(data['title'])
-        self.playstatus = 1
         self.player.play()
         icon = QIcon.fromTheme("media-playback-pause")
         self.parent.playBtn.setIcon(icon)
@@ -108,7 +106,7 @@ class Player(QMediaPlayer):
         windowTitle = '{0} - {1}'.format(data['pc_title'], data['title'])
         self.parent.setWindowTitle(windowTitle)
         if self.queueList.mediaCount() > 1:
-            if pos < self.queueList.mediaCount():
+            if pos < self.queueList.mediaCount() - 1:
                 self.parent.queueNextBtn.setEnabled(True)
             else:
                 self.parent.queueNextBtn.setEnabled(False)
@@ -132,8 +130,9 @@ class Player(QMediaPlayer):
         self.position = pos
         item = self.parent.queueList.item(pos)
         widget = self.parent.queueList.itemWidget(item)
-        icon = QIcon.fromTheme("media-playback-start")
-        widget.statusIcon.setPixmap(icon.pixmap(16, 16))
+        if widget:
+            icon = QIcon.fromTheme("media-playback-start")
+            widget.statusIcon.setPixmap(icon.pixmap(16, 16))
 
     def setVolume(self, volume):
         self.player.setVolume(volume)

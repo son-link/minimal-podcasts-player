@@ -11,55 +11,6 @@ from ..utils import getAppCacheDir
 cache_dir = getAppCacheDir()
 
 
-class plWidget(QtWidgets.QWidget):
-
-    """
-        The widget use in the episodes list
-    """
-    def __init__(self, parent=None, data=None):
-        super(plWidget, self).__init__(parent)
-        # self.setFixedHeight(64)
-        font = QFont()
-        font.setPointSize(9)
-
-        layout = QtWidgets.QHBoxLayout()
-
-        self.infoWidget = QtWidgets.QWidget()
-
-        layout2 = QtWidgets.QVBoxLayout()
-        self.infoWidget.setLayout(layout2)
-
-        title = QtWidgets.QLabel(data['pc_title'])
-        layout2.addWidget(title)
-
-        label = QtWidgets.QLabel(data['title'])
-        label.setFont(font)
-        layout2.addWidget(label)
-
-        layout.addWidget(self.infoWidget)
-        layout.addStretch(1)
-
-        playIcon = QIcon.fromTheme('media-playback-start')
-        self.btnPlayEpisode = QtWidgets.QPushButton(playIcon, '')
-        self.btnPlayEpisode.value = data['url']
-        # self.btnPlayEpisode.setFlat(True)
-        layout.addWidget(self.btnPlayEpisode)
-
-        addIcon = QIcon.fromTheme('list-add')
-        self.btnAdd = QtWidgets.QPushButton(addIcon, '')
-        self.btnAdd.value = data['idEpisode']
-        self.btnAdd.setFlat(True)
-        layout.addWidget(self.btnAdd)
-
-        downIcon = QIcon.fromTheme('go-down')
-        btnDown = QtWidgets.QPushButton(downIcon, '')
-        btnDown.setFlat(True)
-        layout.addWidget(btnDown)
-
-        layout.setContentsMargins(6, 0, 6, 0)
-        self.setLayout(layout)
-
-
 class podcastWidget(QtWidgets.QWidget):
 
     """
