@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Minimal Podcast Player</string>
+   <string notr="true">Minimal Podcasts Player</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../images.qrc">

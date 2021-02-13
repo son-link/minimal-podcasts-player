@@ -1,14 +1,14 @@
 from setuptools import setup
 
 setup(
-    name="minimal-podcast-player",
-    version="0.1.0",
+    name="minimal-podcasts-player",
+    version="0.1.0.1",
     description="Play your favorite YouTube's music videos and playlist",
     author="Alfonso Saavedra 'Son Link'",
     author_email='sonlink.dourden@gmail.com',
     license="GPL 3.0",
     url="https://github.com/son-link/minimal-podcasts-player",
-    scripts=['bin/minimal-podcast-player'],
+    scripts=['bin/minimal-podcasts-player'],
     packages=['mpp'],
     package_dir={'mpp': 'mpp'},
     package_data={'mpp': ['*', 'locales/*.qm', 'ui/*.py']},
@@ -27,7 +27,7 @@ setup(
             'search.py'
         ]
     },
-    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.1.0.tar.gz',
+    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.1.0.1.tar.gz',
     keywords=['podcasts', 'audio', 'stream'],
     install_requires=[
         'pyqt5',

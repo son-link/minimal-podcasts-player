@@ -33,7 +33,7 @@ if not path.exists(db_file):
     db.createDB()
     sleep(2)
 
-APPIMAGE = False  # Set to True before build the AppImage
+APPIMAGE = True  # Set to True before build the AppImage
 
 # For no Linux system or AppImage set the app icons.
 # On Linux use the icon set on your desktop.

@@ -1,9 +1,10 @@
 [Desktop Entry]
-Name=Minimal Podcast Player
-Comment=Subscribe, listen and download your favorite podcasts, quickly and easily
-Icon="minimal-podcast-player"
-Exec="minimal-podcast-player"
-Terminal=false
+Version=1.0
 Type=Application
-Icon=mpp
+Name=Minimal Podcasts Player
+Comment=Subscribe, listen and (in the future) download your favorite podcasts, quickly and easily.
+Exec=minimal-podcasts-player
+Icon=minimal-podcasts-player
+Terminal=false
+StartupNotify=false
 Categories=AudioVideo;Audio;
