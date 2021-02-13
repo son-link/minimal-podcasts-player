@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Minimal Podcasts Player
+Comment=Subscribe, listen and (in the future) download your favorite podcasts, quickly and easily.
+Exec=minimal-podcasts-player
+Icon=minimal-podcasts-player
+Terminal=false
+StartupNotify=false
+Categories=AudioVideo;Audio;
