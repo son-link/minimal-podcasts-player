@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
+    <width>420</width>
     <height>240</height>
    </rect>
   </property>
@@ -45,9 +45,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="downFolderEdit"/>
-     </item>
      <item row="2" column="2">
       <widget class="QPushButton" name="selDownFolder">
        <property name="text">
@@ -55,7 +52,20 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="2">
+      <widget class="QComboBox" name="themeSelector"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="downFolderEdit"/>
+     </item>
      <item row="3" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Theme:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
