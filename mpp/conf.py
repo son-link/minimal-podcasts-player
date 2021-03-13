@@ -35,7 +35,7 @@ def getConf():
         }
         parser.set('mpp', 'update_on_init', '1')
         parser.set('mpp', 'download_folder', download_dir)
-        parser.set('mpp', 'theme', 'default')
+        parser.set('mpp', 'theme', 'system')
         with open(config_dir + 'mpp.ini', 'w') as configfile:
             parser.write(configfile)
 
@@ -64,7 +64,7 @@ class configDialog(QtWidgets.QDialog):
 
         self.ui.downFolderEdit.setText(self.conf['download_folder'])
 
-        for theme in ['default'] + list_themes():
+        for theme in ['system'] + list_themes():
             self.ui.themeSelector.addItem(theme)
 
         self.ui.themeSelector.setCurrentText(self.conf['theme'])
