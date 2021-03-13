@@ -1,4 +1,4 @@
-from os import path, environ
+from os import path, environ, getenv
 from .ui import Ui_gui
 from PyQt5.QtCore import (
     Qt,
@@ -19,6 +19,7 @@ from . import db
 from . import conf
 from time import sleep
 import re
+import platform
 from qt_material import apply_stylesheet
 
 _translate = QCoreApplication.translate
@@ -31,6 +32,14 @@ db_file = path.join(db_dir, 'mpp.db')
 if not path.exists(db_file):
     db.createDB()
     sleep(2)
+
+# For no Linux system or AppImage set the app icons.
+# On Linux use the icon set on your desktop.
+if platform.system() != 'Linux' or getenv('APPIMAGE') == '1':
+    searchPaths = QIcon.fallbackSearchPaths()
+    searchPaths.append(':/icons')
+    QIcon.setFallbackSearchPaths(searchPaths)
+    QIcon.setThemeName('mpp-dark')  # For dark themes change this to mpp-dark.
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):

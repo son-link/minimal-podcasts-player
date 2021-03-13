@@ -1,5 +1,5 @@
 import podcastparser
-from urllib.request import urlopen
+from urllib.request import urlopen, Request, HTTPError, URLError
 from PyQt5.QtCore import pyqtSignal, QThread, QVariant
 from os import getenv
 import pathlib
@@ -9,10 +9,15 @@ def parseFeed(url):
     """
     docstring
     """
-    with urlopen(url) as response:
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with urlopen(req) as response:
         try:
             return podcastparser.parse(url, response)
         except podcastparser.FeedParseError:
+            return False
+        except HTTPError:
+            return False
+        except URLError:
             return False
 
 

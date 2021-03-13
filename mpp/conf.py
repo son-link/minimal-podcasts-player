@@ -4,6 +4,7 @@ from .ui import Ui_config
 from .utils import getAppDataDir
 from os import path
 from qt_material import apply_stylesheet, list_themes
+from PyQt5.QtGui import QIcon
 
 config_dir = getAppDataDir()
 
@@ -30,7 +31,7 @@ def getConf():
         config = {
             'update_on_init': 1,
             'download_folder': download_dir,
-            'theme': 'system'
+            'theme': 'default'
         }
         parser.set('mpp', 'update_on_init', '1')
         parser.set('mpp', 'download_folder', download_dir)
@@ -86,6 +87,12 @@ class configDialog(QtWidgets.QDialog):
     def changeTheme(self, i):
         theme = self.ui.themeSelector.currentText()
         apply_stylesheet(self.parent, theme=theme)
+        if theme.find('dark') != -1:
+            QIcon.setThemeName('mpp-dark')
+        else:
+            QIcon.setThemeName('mpp')
+
+        self.parent.repaint()
 
     def resetConf(self):
         theme = self.conf['theme']
