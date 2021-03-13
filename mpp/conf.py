@@ -35,6 +35,7 @@ def getConf():
         }
         parser.set('mpp', 'update_on_init', '1')
         parser.set('mpp', 'download_folder', download_dir)
+        parser.set('mpp', 'theme', 'default')
         with open(config_dir + 'mpp.ini', 'w') as configfile:
             parser.write(configfile)
 
