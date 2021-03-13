@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name="minimal-podcasts-player",
-    version="0.1.1",
-    description="Play your favorite YouTube's music videos and playlist",
+    version="0.2.0",
+    description="Subscribe, listen and (in the future) download your favorite podcasts, quickly and easily.",
     author="Alfonso Saavedra 'Son Link'",
     author_email='sonlink.dourden@gmail.com',
     license="GPL 3.0",
@@ -27,7 +27,7 @@ setup(
             'search.py'
         ]
     },
-    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.1.0.1.tar.gz',
+    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.2.0.tar.gz',
     keywords=['podcasts', 'audio', 'stream'],
     install_requires=[
         'pyqt5',
