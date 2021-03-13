@@ -31,7 +31,7 @@ def getConf():
         config = {
             'update_on_init': 1,
             'download_folder': download_dir,
-            'theme': 'default'
+            'theme': 'system'
         }
         parser.set('mpp', 'update_on_init', '1')
         parser.set('mpp', 'download_folder', download_dir)
