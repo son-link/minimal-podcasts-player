@@ -15,7 +15,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
-        MainWindow.setWindowTitle("Minimal Podcast Player")
+        MainWindow.setWindowTitle("Minimal Podcasts Player")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/img/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)

@@ -1,4 +1,4 @@
-from os import path
+from os import path, environ, getenv
 from .ui import Ui_gui
 from PyQt5.QtCore import (
     Qt,
@@ -18,7 +18,7 @@ from .ui import custom_widgets as cw
 from . import db
 from . import conf
 from time import sleep
-import re, os
+import re
 import platform
 from qt_material import apply_stylesheet
 
@@ -33,11 +33,9 @@ if not path.exists(db_file):
     db.createDB()
     sleep(2)
 
-APPIMAGE = False  # Set to True before build the AppImage
-
 # For no Linux system or AppImage set the app icons.
 # On Linux use the icon set on your desktop.
-if platform.system() != 'Linux' or APPIMAGE:
+if platform.system() != 'Linux' or getenv('APPIMAGE') == '1':
     searchPaths = QIcon.fallbackSearchPaths()
     searchPaths.append(':/icons')
     QIcon.setFallbackSearchPaths(searchPaths)
@@ -141,6 +139,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
     def addPodcast(self):
         url, ok = QtWidgets.QInputDialog.getText(self, _translate('MainWindow', 'Add podcast'), 'URL:')
         if ok and url != '':
+            ivoox = re.findall('(https?:\/\/www\.ivoox\.com\/)([a-z0-9\-]+)_sq_([a-z0-9\-]+)_1\.html', url)
+            if ivoox:
+                ivoox = ivoox[0]
+                url = 'https://www.ivoox.com/{0}_fg_{1}_filtro_1.xml'.format(ivoox[1], ivoox[2])
             self.addPCThread = db.addPodcast(self, url)
             self.addPCThread.podcast.connect(self.addNewToList)
             self.addPCThread.start()
@@ -327,11 +329,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
 def init():
     LOCAL_DIR = path.dirname(path.realpath(__file__))
     app = QtWidgets.QApplication([])
-    if platform.system() != 'Linux' or APPIMAGE:
-        apply_stylesheet(app, theme='dark_blue.xml')
+    config = conf.getConf()
+    if config['theme'] != 'system':
+        apply_stylesheet(app, theme=config['theme'])
         stylesheet = app.styleSheet()
         with open(LOCAL_DIR + '/custom.css') as file:
-            app.setStyleSheet(stylesheet + file.read().format(**os.environ))
+            app.setStyleSheet(stylesheet + file.read().format(**environ))
 
     defaultLocale = QLocale.system().name()
     if defaultLocale == 'es_ES':

@@ -16,6 +16,8 @@
     <file>icons/mpp/actions/scalable/media-seek-forward.svg</file>
     <file>icons/mpp/actions/scalable/media-skip-backward.svg</file>
     <file>icons/mpp/actions/scalable/media-skip-forward.svg</file>
+    <file>icons/mpp/actions/scalable/dialog-ok.svg</file>
+    <file>icons/mpp/actions/scalable/dialog-cancel.svg</file>
     <file>icons/mpp-dark/index.theme</file>
     <file>icons/mpp-dark/actions/scalable/applications-system.svg</file>
     <file>icons/mpp-dark/actions/scalable/audio-volume-high.svg</file>
@@ -28,5 +30,7 @@
     <file>icons/mpp-dark/actions/scalable/media-seek-forward.svg</file>
     <file>icons/mpp-dark/actions/scalable/media-skip-backward.svg</file>
     <file>icons/mpp-dark/actions/scalable/media-skip-forward.svg</file>
+    <file>icons/mpp-dark/actions/scalable/dialog-ok.svg</file>
+    <file>icons/mpp-dark/actions/scalable/dialog-cancel.svg</file>
   </qresource>
 </RCC>

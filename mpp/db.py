@@ -40,8 +40,11 @@ class addPodcast(QThread):
             # Firts insert the podcasts info
 
             # Download the cover
-            cover_name = data['cover_url'].split('/')[-1]
-            file_name, headers = urllib.request.urlretrieve(data['cover_url'], cache_dir+'/'+cover_name)
+            cover_name = data['cover_url'].split('/')[-1].split('?')[0]
+            print(cover_name)
+            opener = urllib.request.URLopener()
+            opener.addheader('User-Agent', 'Mozilla/5.0')
+            filename, headers = opener.retrieve(data['cover_url'], cache_dir+'/'+cover_name)
 
             insert = cursor.execute("""
             INSERT INTO podcasts (title, url, cover, description, pageUrl)
