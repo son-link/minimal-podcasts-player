@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="minimal-podcasts-player",
-    version="0.2.0",
+    version="0.2.1",
     description="Subscribe, listen and (in the future) download your favorite podcasts, quickly and easily.",
     author="Alfonso Saavedra 'Son Link'",
     author_email='sonlink.dourden@gmail.com',
@@ -27,7 +27,7 @@ setup(
             'search.py'
         ]
     },
-    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.2.0.tar.gz',
+    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.2.1.tar.gz',
     keywords=['podcasts', 'audio', 'stream'],
     install_requires=[
         'pyqt5',
