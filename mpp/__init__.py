@@ -357,17 +357,11 @@ def init():
     app = QtWidgets.QApplication([])
     config = conf.getConf()
     if not isLinux():
-        apply_stylesheet(app, theme=config['theme'])
         stylesheet = app.styleSheet()
         with open(LOCAL_DIR + '/custom.css') as file:
-            app.setStyleSheet(stylesheet + file.read().format(**environ))
             searchPaths = QIcon.fallbackSearchPaths()
             searchPaths.append(':/icons')
             QIcon.setFallbackSearchPaths(searchPaths)
-            if config['theme'].find('light') != -1:
-                QIcon.setThemeName('mpp')
-            else:
-                QIcon.setThemeName('mpp-dark')
 
     defaultLocale = QLocale.system().name()
     if defaultLocale == 'es_ES':
