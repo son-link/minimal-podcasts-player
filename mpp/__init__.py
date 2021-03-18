@@ -12,14 +12,15 @@ from .player import Player
 from .utils import (
     addNewEpidodes,
     getAppDataDir,
-    getAppCacheDir
+    getAppCacheDir,
+    isLinux
 )
 from .ui import custom_widgets as cw
 from . import db
 from . import conf
+from . import podcasts
 from time import sleep
 import re
-import platform
 from qt_material import apply_stylesheet
 
 _translate = QCoreApplication.translate
@@ -32,14 +33,6 @@ db_file = path.join(db_dir, 'mpp.db')
 if not path.exists(db_file):
     db.createDB()
     sleep(2)
-
-# For no Linux system or AppImage set the app icons.
-# On Linux use the icon set on your desktop.
-if platform.system() != 'Linux' or getenv('APPIMAGE') == '1':
-    searchPaths = QIcon.fallbackSearchPaths()
-    searchPaths.append(':/icons')
-    QIcon.setFallbackSearchPaths(searchPaths)
-    QIcon.setThemeName('mpp-dark')  # For dark themes change this to mpp-dark.
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
@@ -67,6 +60,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.optionsBtn.setMenu(self.menu)
 
         self.splitter.setStretchFactor(1, 2)
+
+        self.podcastsList.customContextMenuRequested.connect(self.podcastsMenu)
 
         self.episodesTable.setColumnCount(4)
         self.episodesTable.setHorizontalHeaderLabels([_translate('MainWindow', 'Episode'), _translate('MainWindow', 'Published'), _translate('MainWindow', 'Duration'), ''])
@@ -137,7 +132,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         myItem.setSizeHint(minimumSizeHint)
 
     def addPodcast(self):
-        url, ok = QtWidgets.QInputDialog.getText(self, _translate('MainWindow', 'Add podcast'), 'URL:')
+        self.addDialog = podcasts.addDialog(self, self.addNewToList)
+        self.addDialog.exec_()
+        '''url, ok = QtWidgets.QInputDialog.getText(self, _translate('MainWindow', 'Add podcast'), 'URL:')
         if ok and url != '':
             ivoox = re.findall('(https?:\/\/www\.ivoox\.com\/)([a-z0-9\-]+)_sq_([a-z0-9\-]+)_1\.html', url)
             if ivoox:
@@ -145,12 +142,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
                 url = 'https://www.ivoox.com/{0}_fg_{1}_filtro_1.xml'.format(ivoox[1], ivoox[2])
             self.addPCThread = db.addPodcast(self, url)
             self.addPCThread.podcast.connect(self.addNewToList)
-            self.addPCThread.start()
+            self.addPCThread.start()'''
 
-    def addNewToList(self, idPodcast):
+    def addNewToList(self, idPodcast, length):
         if (idPodcast):
+            self.addDialog.close()
             data = db.getPodcast(idPodcast)
-            data['total_episodes'] = len(data)
+            data['total_episodes'] = length
             item = cw.podcastWidget(self, data)
             myItem = QtWidgets.QListWidgetItem()
             myItem.value = data['idPodcast']
@@ -325,16 +323,51 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         dialog.exec()
         self.config = conf.getConf()
 
+    def podcastsMenu(self, event):
+        menu = QtWidgets.QMenu(self.podcastsList)
+        addIcon = QIcon.fromTheme('list-remove')
+        addAction = QtWidgets.QAction(addIcon, _translate('MainWindow', 'Unsubscribe'), self)
+        addAction.triggered.connect(self.unsubscribe)
+        menu.addAction(addAction)
+        menu.popup(QCursor.pos())
+
+    def unsubscribe(self):
+        model = self.podcastsList.selectionModel()
+        rows = model.selectedRows()
+        rows.sort()
+        for row in rows:
+            pos = row.row()
+            item = self.podcastsList.item(pos)
+            idPodcast = item.value
+            if (idPodcast):
+                remove = db.removePodcast(idPodcast)
+                if remove:
+                    self.podcastsList.model().removeRow(pos)
+                    self.episodesTable.clear()
+                    self.episodesTable.setRowCount(0)
+                    self.podcastTitle.setText(_translate('MainWindow', 'Podcast'))
+                    self.podcastWeb.setText(_translate('MainWindow', 'Web'))
+                    self.podcastDesc.setText(_translate('MainWindow', 'Description'))
+                    coverImage = QPixmap(':/img/no-cover.svg')
+                    self.podcastCover.setPixmap(coverImage.scaled(128, 128, Qt.KeepAspectRatio))
+
 
 def init():
     LOCAL_DIR = path.dirname(path.realpath(__file__))
     app = QtWidgets.QApplication([])
     config = conf.getConf()
-    if config['theme'] != 'system':
+    if not isLinux():
         apply_stylesheet(app, theme=config['theme'])
         stylesheet = app.styleSheet()
         with open(LOCAL_DIR + '/custom.css') as file:
             app.setStyleSheet(stylesheet + file.read().format(**environ))
+            searchPaths = QIcon.fallbackSearchPaths()
+            searchPaths.append(':/icons')
+            QIcon.setFallbackSearchPaths(searchPaths)
+            if config['theme'].find('light') != -1:
+                QIcon.setThemeName('mpp')
+            else:
+                QIcon.setThemeName('mpp-dark')
 
     defaultLocale = QLocale.system().name()
     if defaultLocale == 'es_ES':

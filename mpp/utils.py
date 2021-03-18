@@ -2,7 +2,7 @@ import podcastparser
 from urllib.request import urlopen, Request, HTTPError, URLError
 from PyQt5.QtCore import pyqtSignal, QThread, QVariant
 from os import getenv
-import pathlib
+import pathlib, platform
 
 
 def parseFeed(url):
@@ -87,3 +87,11 @@ def getAppCacheDir():
 
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
     return path
+
+
+def isLinux():
+    """Return True if the platform is Linux and not the AppImage"""
+    if platform.system() == 'Linux' and not getenv('APPIMAGE'):
+        return True
+    else:
+        return False

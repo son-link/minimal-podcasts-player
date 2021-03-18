@@ -1,12 +1,16 @@
 from PyQt5 import QtWidgets
 from configparser import ConfigParser
 from .ui import Ui_config
-from .utils import getAppDataDir
-from os import path
+from .utils import getAppDataDir, isLinux
+from os import path, execl
 from qt_material import apply_stylesheet, list_themes
 from PyQt5.QtGui import QIcon
+import sys
 
 config_dir = getAppDataDir()
+default_theme = 'system'
+if not isLinux():
+    default_theme = 'default'
 
 
 def getConf():
@@ -31,11 +35,11 @@ def getConf():
         config = {
             'update_on_init': 1,
             'download_folder': download_dir,
-            'theme': 'system'
+            'theme': default_theme
         }
         parser.set('mpp', 'update_on_init', '1')
         parser.set('mpp', 'download_folder', download_dir)
-        parser.set('mpp', 'theme', 'system')
+        parser.set('mpp', 'theme', default_theme)
         with open(config_dir + 'mpp.ini', 'w') as configfile:
             parser.write(configfile)
 
@@ -56,6 +60,7 @@ class configDialog(QtWidgets.QDialog):
         self.ui.buttonBox.rejected.connect(self.resetConf)
 
         self.conf = getConf()
+        self.current_theme = self.conf['theme']
 
         if self.conf['update_on_init']:
             self.ui.cbUpdateInit.setChecked(True)
@@ -64,11 +69,16 @@ class configDialog(QtWidgets.QDialog):
 
         self.ui.downFolderEdit.setText(self.conf['download_folder'])
 
-        for theme in ['system'] + list_themes():
-            self.ui.themeSelector.addItem(theme)
+        if isLinux():
+            self.ui.themeLabel.setHidden(True)
+            self.ui.themeSelector.setHidden(True)
+        else:
+            themes = ['default'] + list_themes()
+            for theme in themes:
+                self.ui.themeSelector.addItem(theme)
 
-        self.ui.themeSelector.setCurrentText(self.conf['theme'])
-        self.ui.themeSelector.currentIndexChanged.connect(self.changeTheme)
+            self.ui.themeSelector.setCurrentText(self.conf['theme'])
+            self.ui.themeSelector.currentIndexChanged.connect(self.changeTheme)
 
     def saveConf(self):
         update_on_init = '0'
@@ -83,15 +93,19 @@ class configDialog(QtWidgets.QDialog):
         with open(config_dir + 'mpp.ini', 'w') as configfile:
             parser.write(configfile)
 
+        theme = self.ui.themeSelector.currentText()
+        if theme == 'system' and self.current_theme != 'system':
+            execl(sys.executable, sys.executable, *sys.argv)
+
         return getConf()
 
     def changeTheme(self, i):
         theme = self.ui.themeSelector.currentText()
         apply_stylesheet(self.parent, theme=theme)
-        if theme.find('dark') != -1:
-            QIcon.setThemeName('mpp-dark')
-        else:
+        if theme.find('light') != -1:
             QIcon.setThemeName('mpp')
+        else:
+            QIcon.setThemeName('mpp-dark')
 
         self.parent.repaint()
 

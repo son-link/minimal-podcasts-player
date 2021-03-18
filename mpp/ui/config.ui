@@ -59,7 +59,7 @@
       <widget class="QLineEdit" name="downFolderEdit"/>
      </item>
      <item row="3" column="1">
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="themeLabel">
        <property name="text">
         <string>Theme:</string>
        </property>

@@ -20,7 +20,7 @@ def dict_factory(cursor, row):
 
 
 class addPodcast(QThread):
-    podcast = pyqtSignal(QVariant)
+    podcast = pyqtSignal(int, int)
 
     def __init__(self, parent, url):
         super(addPodcast, self).__init__(parent)
@@ -41,7 +41,6 @@ class addPodcast(QThread):
 
             # Download the cover
             cover_name = data['cover_url'].split('/')[-1].split('?')[0]
-            print(cover_name)
             opener = urllib.request.URLopener()
             opener.addheader('User-Agent', 'Mozilla/5.0')
             filename, headers = opener.retrieve(data['cover_url'], cache_dir+'/'+cover_name)
@@ -92,7 +91,7 @@ class addPodcast(QThread):
             cursor.execute('UPDATE podcasts SET lastUpdate=%i WHERE idPodcast=%i' % (episodes[0][4], lastid))
             con.commit()
             con.close()
-            self.podcast.emit(lastid)
+            self.podcast.emit(lastid, len(episodes))
 
     def stop(self):
         self.quit()
@@ -313,3 +312,21 @@ def createDB():
         with open(dir + '/ddbb.sql') as sqlfile:
             sql = sqlfile.read()
             cursor.executescript(sql)
+
+
+def removePodcast(idPodcast):
+    con = sqlite3.connect(db_dir + "mpp.db")
+    cursor = con.cursor()
+    if not cursor:
+        print("Database Error", "Unable To Connect To The Database!")
+        return False
+
+    try:
+        cursor.execute('DELETE FROM podcasts WHERE idPodcast=?', (idPodcast,))
+        con.commit()
+        cursor.execute('DELETE FROM episodes WHERE idPodcast=?', (idPodcast,))
+        con.commit()
+        con.close()
+        return True
+    except:
+        return False
