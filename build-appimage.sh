@@ -13,9 +13,9 @@ chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh appimagetool-x8
 
 # Set Environment
 export CONDA_CHANNELS='local;conda-forge'
-export PIP_REQUIREMENTS='pyqt5 podcastparser qt-material .'
+export PIP_REQUIREMENTS='pyqt5 podcastparser .'
 export PIP_WORKDIR="$REPO_ROOT"
-export VERSION=0.2.1
+export VERSION=0.3.0
 
 # Deploy
 ./linuxdeploy-x86_64.AppImage \

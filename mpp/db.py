@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import pyqtSignal, QThread, QVariant
-from .utils import parseFeed, getAppDataDir, getAppCacheDir
+from PyQt5.QtCore import pyqtSignal, QThread
+from .utils import (
+    parseFeed,
+    getAppDataDir,
+    getAppCacheDir,
+    downloadCover,
+    coverExist
+)
 import time
 import sqlite3
 import urllib
 import re
 from datetime import datetime
 from os import path
+from shutil import copyfile
+from pathlib import Path
 
 db_dir = getAppDataDir()
 cache_dir = getAppCacheDir()
@@ -36,18 +44,38 @@ class addPodcast(QThread):
             self.stop()
         else:
             data = parseFeed(self.url)
-
             # Firts insert the podcasts info
 
             # Download the cover
             cover_name = data['cover_url'].split('/')[-1].split('?')[0]
-            opener = urllib.request.URLopener()
-            opener.addheader('User-Agent', 'Mozilla/5.0')
-            filename, headers = opener.retrieve(data['cover_url'], cache_dir+'/'+cover_name)
+            downloadCover(data['cover_url'], cover_name)
 
-            insert = cursor.execute("""
-            INSERT INTO podcasts (title, url, cover, description, pageUrl)
-            VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')""".format(data['title'], self.url, cover_name, data['description'], data['link']))
+            insert = cursor.execute(
+                """
+                INSERT INTO podcasts (
+                    title,
+                    url,
+                    cover,
+                    description,
+                    pageUrl,
+                    coverUrl
+                )
+                VALUES (
+                    '{0}',
+                    '{1}',
+                    '{2}',
+                    '{3}',
+                    '{4}',
+                    '{5}')
+                """.format(
+                    data['title'],
+                    self.url,
+                    cover_name,
+                    data['description'],
+                    data['link'],
+                    data['cover_url']
+                )
+            )
             con.commit()
 
             if not insert:
@@ -55,7 +83,23 @@ class addPodcast(QThread):
 
             lastid = cursor.lastrowid
             episodes = []
-            sql = "INSERT INTO episodes (idPodcast, title, description, url, date, totalTime) VALUES (?, ?, ?, ?, ?, ?)"
+            sql = """
+                INSERT INTO episodes (
+                    idPodcast,
+                    title,
+                    description,
+                    url,
+                    date,
+                    totalTime
+                ) VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
+            """
 
             for e in data['episodes']:
 
@@ -65,7 +109,10 @@ class addPodcast(QThread):
                     description = e['description_html']
                 else:
                     description = e['description']
-                    description = re.sub('(https?:\/\/[^\s]+)', '<a href="\g<0>">\g<0></a>', description)
+                    description = re.sub(
+                        r'(https?:\/\/[^\s]+)', r'<a href="\g<0>">\g<0></a>',
+                        description
+                    )
 
                 episodeUrl = ''
                 if (e['enclosures']):
@@ -88,7 +135,12 @@ class addPodcast(QThread):
             con.commit()
 
             # Insert the last date in the podcast data for insert new episodes later
-            cursor.execute('UPDATE podcasts SET lastUpdate=%i WHERE idPodcast=%i' % (episodes[0][4], lastid))
+            cursor.execute(
+                'UPDATE podcasts SET lastUpdate=%i WHERE idPodcast=%i' % (
+                    episodes[0][4],
+                    lastid
+                )
+            )
             con.commit()
             con.close()
             self.podcast.emit(lastid, len(episodes))
@@ -126,7 +178,9 @@ class getEpisodes(QThread):
             con.close()
 
             for r in rows:
-                totalTime = time.strftime('%H:%M:%S', time.gmtime(r['totalTime']))
+                totalTime = time.strftime(
+                    '%H:%M:%S', time.gmtime(r['totalTime'])
+                )
                 r['totalTime'] = totalTime
                 self.episodes.emit(r)
 
@@ -185,6 +239,7 @@ def getPodcast(idPodcast):
 
 class updateEpisodes(QThread):
     newEpisodes = pyqtSignal(object)
+    end = pyqtSignal(bool)
 
     def __init__(self, parent, idPodcast=None, returnNew=False):
         super(updateEpisodes, self).__init__(parent)
@@ -196,12 +251,16 @@ class updateEpisodes(QThread):
         con.row_factory = dict_factory
         cursor = con.cursor()
         dataReturn = []
+        refreshList = False
 
         if not cursor:
             print("Database Error", "Unable To Connect To The Database!")
             self.stop()
         else:
-            sql = "SELECT idPodcast, url, lastUpdate, title, cover FROM podcasts"
+            sql = """
+                SELECT idPodcast, url, lastUpdate, title, cover, coverUrl
+                FROM podcasts
+            """
             if self.idPodcast and not self.returnNew:
                 sql += ' WHERE idPodcast=%i' % self.idPodcast
 
@@ -216,7 +275,31 @@ class updateEpisodes(QThread):
                     if not data:
                         continue
 
-                    sql = "INSERT INTO episodes (idPodcast, title, description, url, date, totalTime) VALUES (?, ?, ?, ?, ?, ?)"
+                    sql = """
+                        INSERT INTO episodes (
+                            idPodcast,
+                            title,
+                            description,
+                            url,
+                            date,
+                            totalTime
+                        ) VALUES (
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            ?
+                        )
+                    """
+
+                    cover_name = data['cover_url'].split('/')[-1].split('?')[0]
+                    if not p['coverUrl'] or not coverExist(cover_name):
+                        downloadCover(
+                            data['cover_url'],
+                            cache_dir+'/'+cover_name
+                        )
+                        refreshList = True
 
                     for e in data['episodes']:
                         published = int(e['published'])
@@ -229,7 +312,11 @@ class updateEpisodes(QThread):
                             description = e['description_html']
                         else:
                             description = e['description']
-                            description = re.sub('(https?:\/\/[^\s]+)', '<a href="\g<0>">\g<0></a>', description)
+                            description = re.sub(
+                                r'(https?:\/\/[^\s]+)',
+                                r'<a href="\g<0>">\g<0></a>',
+                                description
+                            )
 
                         episodeUrl = ''
                         if (e['enclosures']):
@@ -249,7 +336,10 @@ class updateEpisodes(QThread):
                         episodes.append(episode)
 
                         if self.returnNew:
-                            date_format = datetime.utcfromtimestamp(e['published']).strftime('%d/%m/%Y a las %H:%M')
+                            date_format = datetime.utcfromtimestamp(
+                                e['published']
+                            ).strftime('%d/%m/%Y a las %H:%M')
+
                             new = {
                                 'idPodcast': p['idPodcast'],
                                 'title': e['title'],
@@ -267,7 +357,15 @@ class updateEpisodes(QThread):
                         cursor.executemany(sql, episodes)
                         con.commit()
                         # Insert the last date in the podcast data for insert new episodes later
-                        cursor.execute('UPDATE podcasts SET lastUpdate=%i WHERE idPodcast=%i' % (episodes[0][4], p['idPodcast']))
+                        cursor.execute("""
+                            UPDATE podcasts
+                            SET lastUpdate=%i, coverUrl='%s'
+                            WHERE idPodcast=%i
+                            """ % (
+                                episodes[0][4],
+                                data['cover_url'],
+                                p['idPodcast'])
+                            )
                         con.commit()
 
                         if self.idPodcast and self.returnNew and (self.idPodcast == p['idPodcast']):
@@ -278,6 +376,7 @@ class updateEpisodes(QThread):
 
         con.close()
         self.newEpisodes.emit(dataReturn)
+        self.end.emit(refreshList)
 
     def stop(self):
         self.quit()
@@ -314,6 +413,93 @@ def createDB():
             cursor.executescript(sql)
 
 
+def updateDB():
+    """Update the database tables"""
+
+    # Make a ddbb.sql backcup
+    copyfile(db_dir + 'mpp.db', db_dir + 'mpp.db.bck')
+    con = sqlite3.connect(db_dir + "mpp.db")
+    con.row_factory = dict_factory
+    cursor = con.cursor()
+
+    if not cursor:
+        print("Database Error", "Unable To Connect To The Database!")
+        return False
+    else:
+        # First check if one of the new columns exists
+
+        cursor.execute("""
+            SELECT COUNT(*) AS CNTREC FROM pragma_table_info('podcasts') WHERE name='coverUrl'
+        """)
+
+        check = cursor.fetchone()
+        if check['CNTREC'] > 0:
+            delete_file = Path(db_dir + 'mpp.db.bck')
+            delete_file.unlink()
+            con.close()
+            return
+        
+        # Rename the tables for after copy the data
+        con.execute('ALTER TABLE podcasts RENAME TO podcasts_bck')
+        con.commit()
+        con.execute('ALTER TABLE episodes RENAME TO episodes_bck')
+        con.commit()
+
+        # Now create again the tables
+        dir = path.dirname(path.realpath(__file__))
+        with open(dir + '/ddbb.sql') as sqlfile:
+            sql = sqlfile.read()
+            cursor.executescript(sql)
+
+            # Get the columns name to copy the data
+            cursor.execute("SELECT name FROM pragma_table_info('podcasts_bck')")
+            insert = 'INSERT INTO podcasts ('
+            columns = cursor.fetchall()
+            for i in range(len(columns)):
+                col = columns[i]['name']
+                if i > 0:
+                    insert += ','
+                insert += col
+
+            insert += ') SELECT * FROM podcasts_bck'
+            cursor.execute(insert)
+            con.commit()
+
+            # The same for the episodes
+            cursor.execute("SELECT name FROM pragma_table_info('episodes_bck')")
+            insert = 'INSERT INTO episodes ('
+            columns = cursor.fetchall()
+            for i in range(len(columns)):
+                col = columns[i]['name']
+                if i > 0:
+                    insert += ','
+                insert += col
+
+            insert += ') SELECT * FROM episodes_bck'
+            cursor.execute(insert)
+            con.commit()
+
+            # Add coverUrl data on podcasts:
+            cursor.execute("SELECT idPodcast, url FROM podcasts")
+            rows = cursor.fetchall()
+
+            for r in rows:
+                data = parseFeed(r['url'])
+                cover_name = data['cover_url'].split('/')[-1].split('?')[0]
+                downloadCover(data['cover_url'], cover_name)
+                cursor.execute(
+                    "UPDATE podcasts set coverUrl='{}' WHERE idPodcast={}"
+                    .format(data['cover_url'], r['idPodcast'])
+                )
+                con.commit()
+                
+            # Finally remove thec _bck tables and close db
+            cursor.execute('DROP TABLE podcasts_bck')
+            cursor.execute('DROP TABLE episodes_bck')
+            con.commit()
+            con.close()
+
+
 def removePodcast(idPodcast):
     con = sqlite3.connect(db_dir + "mpp.db")
     cursor = con.cursor()
@@ -328,5 +514,23 @@ def removePodcast(idPodcast):
         con.commit()
         con.close()
         return True
-    except:
+    except sqlite3.Error as err:
+        print(err)
+        return False
+
+
+def addDownLocalfile(idEpisode, localfile):
+    con = sqlite3.connect(db_dir + "mpp.db")
+    cursor = con.cursor()
+    if not cursor:
+        print("Database Error", "Unable To Connect To The Database!")
+        return False
+
+    try:
+        cursor.execute('UPDATE episodes SET localfile=? WHERE idEpisode=?', (localfile, idEpisode))
+        con.commit()
+        con.close()
+        return True
+    except sqlite3.Error as err:
+        print(err)
         return False

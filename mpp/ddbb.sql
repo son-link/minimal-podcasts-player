@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS "podcasts" (
 	"lastUpdate"	INTEGER,
 	"pageUrl"	TEXT,
 	"description"	TEXT,
+	"coverUrl"	TEXT,
 	PRIMARY KEY("idPodcast" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "episodes" (
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS "episodes" (
 	"url"	TEXT NOT NULL,
 	"date"	INTEGER NOT NULL,
 	"totalTime"	INTEGER,
+	"localfile"	TEXT,
 	PRIMARY KEY("idEpisode" AUTOINCREMENT)
 );
 COMMIT;

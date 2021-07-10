@@ -25,12 +25,22 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
+     <item row="2" column="2">
+      <widget class="QPushButton" name="selDownFolder">
+       <property name="text">
+        <string>Select</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0" colspan="2">
       <widget class="QCheckBox" name="cbUpdateInit">
        <property name="text">
         <string>Update at init.</string>
        </property>
       </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="downFolderEdit"/>
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="label">
@@ -42,26 +52,6 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="selDownFolder">
-       <property name="text">
-        <string>Select</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QComboBox" name="themeSelector"/>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="downFolderEdit"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLabel" name="themeLabel">
-       <property name="text">
-        <string>Theme:</string>
        </property>
       </widget>
      </item>
@@ -77,6 +67,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="cbRenameDown">
+       <property name="text">
+        <string>Rename episodes after download</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

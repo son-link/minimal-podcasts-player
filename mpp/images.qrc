@@ -4,33 +4,21 @@
     <file>icon.svg</file>
   </qresource>
   <qresource prefix="/">
-    <file>icons/mpp/index.theme</file>
-    <file>icons/mpp/actions/scalable/applications-system.svg</file>
-    <file>icons/mpp/actions/scalable/audio-volume-high.svg</file>
-    <file>icons/mpp/actions/scalable/list-add.svg</file>
-    <file>icons/mpp/actions/scalable/lits-remove.svg</file>
-    <file>icons/mpp/actions/scalable/media-playback-pause.svg</file>
-    <file>icons/mpp/actions/scalable/media-playback-start.svg</file>
-    <file>icons/mpp/actions/scalable/media-playback-stop.svg</file>
-    <file>icons/mpp/actions/scalable/media-seek-backward.svg</file>
-    <file>icons/mpp/actions/scalable/media-seek-forward.svg</file>
-    <file>icons/mpp/actions/scalable/media-skip-backward.svg</file>
-    <file>icons/mpp/actions/scalable/media-skip-forward.svg</file>
-    <file>icons/mpp/actions/scalable/dialog-ok.svg</file>
-    <file>icons/mpp/actions/scalable/dialog-cancel.svg</file>
-    <file>icons/mpp-dark/index.theme</file>
-    <file>icons/mpp-dark/actions/scalable/applications-system.svg</file>
-    <file>icons/mpp-dark/actions/scalable/audio-volume-high.svg</file>
-    <file>icons/mpp-dark/actions/scalable/list-add.svg</file>
-    <file>icons/mpp-dark/actions/scalable/lits-remove.svg</file>
-    <file>icons/mpp-dark/actions/scalable/media-playback-pause.svg</file>
-    <file>icons/mpp-dark/actions/scalable/media-playback-start.svg</file>
-    <file>icons/mpp-dark/actions/scalable/media-playback-stop.svg</file>
-    <file>icons/mpp-dark/actions/scalable/media-seek-backward.svg</file>
-    <file>icons/mpp-dark/actions/scalable/media-seek-forward.svg</file>
-    <file>icons/mpp-dark/actions/scalable/media-skip-backward.svg</file>
-    <file>icons/mpp-dark/actions/scalable/media-skip-forward.svg</file>
-    <file>icons/mpp-dark/actions/scalable/dialog-ok.svg</file>
-    <file>icons/mpp-dark/actions/scalable/dialog-cancel.svg</file>
+    <file>icons/breeze/index.theme</file>
+    <file>icons/breeze/actions/scalable/applications-system.svg</file>
+    <file>icons/breeze/actions/scalable/audio-volume-high.svg</file>
+    <file>icons/breeze/actions/scalable/list-add.svg</file>
+    <file>icons/breeze/actions/scalable/list-remove.svg</file>
+    <file>icons/breeze/actions/scalable/media-playback-pause.svg</file>
+    <file>icons/breeze/actions/scalable/media-playback-start.svg</file>
+    <file>icons/breeze/actions/scalable/media-playback-stop.svg</file>
+    <file>icons/breeze/actions/scalable/media-seek-backward.svg</file>
+    <file>icons/breeze/actions/scalable/media-seek-forward.svg</file>
+    <file>icons/breeze/actions/scalable/media-skip-backward.svg</file>
+    <file>icons/breeze/actions/scalable/media-skip-forward.svg</file>
+    <file>icons/breeze/actions/scalable/dialog-ok.svg</file>
+    <file>icons/breeze/actions/scalable/dialog-cancel.svg</file>
+    <file>icons/breeze/actions/scalable/go-down.svg</file>
+    <file>icons/breeze/actions/scalable/search.svg</file>
   </qresource>
 </RCC>

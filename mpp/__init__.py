@@ -1,4 +1,4 @@
-from os import path, environ, getenv
+from os import path
 from .ui import Ui_gui
 from PyQt5.QtCore import (
     Qt,
@@ -13,15 +13,16 @@ from .utils import (
     addNewEpidodes,
     getAppDataDir,
     getAppCacheDir,
-    isLinux
+    isLinux,
+    isBSD
 )
 from .ui import custom_widgets as cw
 from . import db
 from . import conf
 from . import podcasts
+from . import download
 from time import sleep
 import re
-from qt_material import apply_stylesheet
 
 _translate = QCoreApplication.translate
 
@@ -33,6 +34,8 @@ db_file = path.join(db_dir, 'mpp.db')
 if not path.exists(db_file):
     db.createDB()
     sleep(2)
+else:
+    db.updateDB()
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
@@ -45,15 +48,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
 
         self.menu = QtWidgets.QMenu()
 
-        self.actionAdd = QtWidgets.QAction(_translate('MainWindow', 'Add podcast'), self)
+        self.actionAdd = QtWidgets.QAction(
+            _translate('MainWindow', 'Add podcast'),
+            self
+        )
         self.actionAdd.triggered.connect(self.addPodcast)
         self.menu.addAction(self.actionAdd)
 
-        self.actionUpdate = QtWidgets.QAction(_translate('MainWindow', 'Update'), self)
+        self.actionUpdate = QtWidgets.QAction(
+            _translate('MainWindow', 'Update'),
+            self
+        )
         self.actionUpdate.triggered.connect(self.getNewEpisodes)
         self.menu.addAction(self.actionUpdate)
 
-        self.actionConfig = QtWidgets.QAction(_translate('MainWindow', 'Configure'), self)
+        self.actionConfig = QtWidgets.QAction(
+            _translate('MainWindow', 'Configure'),
+            self
+        )
         self.actionConfig.triggered.connect(self.showConfDialog)
         self.menu.addAction(self.actionConfig)
 
@@ -64,8 +76,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.podcastsList.customContextMenuRequested.connect(self.podcastsMenu)
 
         self.episodesTable.setColumnCount(4)
-        self.episodesTable.setHorizontalHeaderLabels([_translate('MainWindow', 'Episode'), _translate('MainWindow', 'Published'), _translate('MainWindow', 'Duration'), ''])
-        self.episodesTable.customContextMenuRequested.connect(self.episodesMenu)
+        self.episodesTable.setHorizontalHeaderLabels(
+            [
+                _translate('MainWindow', 'Episode'),
+                _translate('MainWindow', 'Published'),
+                _translate('MainWindow', 'Duration'),
+                ''
+            ]
+        )
+        self.episodesTable.customContextMenuRequested.connect(
+            self.episodesMenu
+        )
         self.episodesTable.setWordWrap(True)
 
         self.queueList.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -106,6 +127,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         if self.config['update_on_init']:
             self.getNewEpisodes()
 
+        self.dw = download.Downloads()
+
     def showEpisodeInfo(self, item):
         description = self.podcastsList.currentItem().value
         self.infoPodcastLabel.setText(description)
@@ -134,15 +157,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
     def addPodcast(self):
         self.addDialog = podcasts.addDialog(self, self.addNewToList)
         self.addDialog.exec_()
-        '''url, ok = QtWidgets.QInputDialog.getText(self, _translate('MainWindow', 'Add podcast'), 'URL:')
-        if ok and url != '':
-            ivoox = re.findall('(https?:\/\/www\.ivoox\.com\/)([a-z0-9\-]+)_sq_([a-z0-9\-]+)_1\.html', url)
-            if ivoox:
-                ivoox = ivoox[0]
-                url = 'https://www.ivoox.com/{0}_fg_{1}_filtro_1.xml'.format(ivoox[1], ivoox[2])
-            self.addPCThread = db.addPodcast(self, url)
-            self.addPCThread.podcast.connect(self.addNewToList)
-            self.addPCThread.start()'''
 
     def addNewToList(self, idPodcast, length):
         if (idPodcast):
@@ -157,9 +171,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             minimumSizeHint = self.podcastsList.minimumSizeHint()
             minimumSizeHint.setHeight(48)
             myItem.setSizeHint(minimumSizeHint)
+            self.statusBar().showMessage('')
 
-    def reloadPCList(self, data):
-        if data:
+    def reloadPCList(self, reload):
+        if reload:
+            self.podcastsList.clear()
             thread = db.getPodcasts(self)
             thread.podcast.connect(self.addPCList)
             thread.start()
@@ -192,11 +208,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         idPodcast = self.podcastsList.currentItem().value
         info = db.getPodcast(idPodcast)
         self.podcastTitle.setText(info['title'])
-        self.podcastWeb.setText('<a href="{0}">{0}</a>'.format(info['pageUrl']))
-        description = re.sub('(https?:\/\/[^\s]+)', '<a href="\g<0>">\g<0></a>', info['description'])
+        self.podcastWeb.setText(
+            '<a href="{0}">{0}</a>'.format(info['pageUrl'])
+        )
+        description = re.sub(
+            r'(https?:\/\/[^\s]+)', r'<a href="\g<0>">\g<0></a>',
+            info['description']
+        )
 
         coverImage = QPixmap(cache_dir+'/'+info['cover'])
-        self.podcastCover.setPixmap(coverImage.scaled(128, 128, Qt.KeepAspectRatio))
+        self.podcastCover.setPixmap(
+            coverImage.scaled(128, 128, Qt.KeepAspectRatio)
+        )
 
         self.podcastDesc.setText(description)
         thread = db.getEpisodes(self, idPodcast)
@@ -209,7 +232,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         btnLayout = QtWidgets.QHBoxLayout()
 
         btnWidget.setProperty('class', 'episode')
-        btnLayout.setContentsMargins(1,1,1,1)
+        btnLayout.setContentsMargins(1, 1, 1, 1)
         btnWidget.setLayout(btnLayout)
 
         playIcon = QIcon.fromTheme('media-playback-start')
@@ -227,12 +250,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         btnPlayEpisode.setProperty('class', 'episode_btn')
         btnAdd.clicked.connect(self.add2queue)
         btnLayout.addWidget(btnAdd)
-        btnLayout.addStretch(1)
 
-        '''downIcon = QIcon.fromTheme('go-down')
+        downIcon = QIcon.fromTheme('go-down')
         btnDown = QtWidgets.QPushButton(downIcon, '')
+        btnDown.value = self.lastEpisodePos
         btnDown.setFlat(True)
-        btnLayout.addWidget(btnDown)'''
+        btnDown.clicked.connect(self.addDownload)
+        btnLayout.addWidget(btnDown)
+
+        btnLayout.addStretch(1)
 
         self.episodesData.append(data)
         self.episodesCount += 1
@@ -245,9 +271,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.episodesTable.setRowCount(self.episodesCount)
         self.episodesTable.setItem(pos, 0, QtWidgets.QTableWidgetItem(''))
         title = '{0}'.format(data['title'])
-        self.episodesTable.setItem(pos, 0, QtWidgets.QTableWidgetItem(title))
-        self.episodesTable.setItem(pos, 1, QtWidgets.QTableWidgetItem(data['date_format']))
-        self.episodesTable.setItem(pos, 2, QtWidgets.QTableWidgetItem(str(data['totalTime'])))
+        self.episodesTable.setItem(
+            pos,
+            0,
+            QtWidgets.QTableWidgetItem(title)
+        )
+        self.episodesTable.setItem(
+            pos,
+            1,
+            QtWidgets.QTableWidgetItem(data['date_format'])
+        )
+        self.episodesTable.setItem(
+            pos,
+            2,
+            QtWidgets.QTableWidgetItem(str(data['totalTime']))
+        )
         self.episodesTable.setCellWidget(pos, 3, btnWidget)
 
         header = self.episodesTable.horizontalHeader()
@@ -256,20 +294,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
 
         self.lastEpisodePos += 1
-        #self.episodesTable.resizeRowsToContents()
+        # self.episodesTable.resizeRowsToContents()
 
     def getEpisodeData(self, item):
         row = item.row()
         data = self.player.queueData[row]
         description = '<h3>%s</h3>' % data['title']
-        description += _translate('MainWindow', '<p>Subido el {}</p>'.format(data['date']))
+        description += _translate(
+            'MainWindow',
+            '<p>Subido el {}</p>'.format(data['date'])
+        )
         description += data['description']
         self.infoEpisodeLabel.setText(description)
 
     def episodesMenu(self, event):
         menu = QtWidgets.QMenu(self.episodesTable)
         addIcon = QIcon.fromTheme('list-add')
-        addAction = QtWidgets.QAction(addIcon, _translate('MainWindow', 'Add to queue'), self)
+        addAction = QtWidgets.QAction(
+            addIcon,
+            _translate('MainWindow', 'Add to queue'),
+            self
+        )
         addAction.triggered.connect(self.getEpisodesSelecteds)
         menu.addAction(addAction)
         # add other required actions
@@ -284,9 +329,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.add2queue(None, pos)
 
     def getNewEpisodes(self):
-        self.statusBar().showMessage(_translate('MainWindow', 'Searching new episodes....'))
+        self.statusBar().showMessage(
+            _translate('MainWindow', 'Searching new episodes....')
+        )
         thread = db.updateEpisodes(self, self.podcastSelected, True)
         thread.newEpisodes.connect(self.updateEpisodesList)
+        thread.end.connect(self.reloadPCList)
         thread.start()
 
     def updateEpisodesList(self, data):
@@ -296,11 +344,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             thread.start()
 
         self.statusBar().showMessage('')
+        self.podcastsList.repaint()
 
     def queueMenu(self, event):
         menu = QtWidgets.QMenu(self.queueList)
         delIcon = QIcon.fromTheme('list-remove')
-        delAction = QtWidgets.QAction(delIcon, _translate('MainWindow', 'Remove from queue'), self)
+        delAction = QtWidgets.QAction(
+            delIcon,
+            _translate('MainWindow', 'Remove from queue'),
+            self
+        )
         delAction.triggered.connect(self.getQueueSelecteds)
         menu.addAction(delAction)
         menu.popup(QCursor.pos())
@@ -326,7 +379,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
     def podcastsMenu(self, event):
         menu = QtWidgets.QMenu(self.podcastsList)
         addIcon = QIcon.fromTheme('list-remove')
-        addAction = QtWidgets.QAction(addIcon, _translate('MainWindow', 'Unsubscribe'), self)
+        addAction = QtWidgets.QAction(
+            addIcon,
+            _translate('MainWindow', 'Unsubscribe'),
+            self
+        )
         addAction.triggered.connect(self.unsubscribe)
         menu.addAction(addAction)
         menu.popup(QCursor.pos())
@@ -345,29 +402,45 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
                     self.podcastsList.model().removeRow(pos)
                     self.episodesTable.clear()
                     self.episodesTable.setRowCount(0)
-                    self.podcastTitle.setText(_translate('MainWindow', 'Podcast'))
-                    self.podcastWeb.setText(_translate('MainWindow', 'Web'))
-                    self.podcastDesc.setText(_translate('MainWindow', 'Description'))
+                    self.podcastTitle.setText(
+                        _translate('MainWindow', 'Podcast')
+                    )
+                    self.podcastWeb.setText(
+                        _translate('MainWindow', 'Web')
+                    )
+                    self.podcastDesc.setText(
+                        _translate('MainWindow', 'Description')
+                    )
                     coverImage = QPixmap(':/img/no-cover.svg')
-                    self.podcastCover.setPixmap(coverImage.scaled(128, 128, Qt.KeepAspectRatio))
+                    self.podcastCover.setPixmap(
+                        coverImage.scaled(128, 128, Qt.KeepAspectRatio)
+                    )
+
+    def addDownload(self, pressed, pos=None):
+        if not pos and pos != 0:
+            source = self.sender()
+            pos = source.value
+
+        data = self.episodesData[pos]
+
+        item = self.dw.add(self, data, self.player)
+        myItem = QtWidgets.QListWidgetItem()
+        self.downloadsList.addItem(myItem)
+        self.downloadsList.setItemWidget(myItem, item)
+
+        minimumSizeHint = self.downloadsList.minimumSizeHint()
+        minimumSizeHint.setHeight(48)
+        myItem.setSizeHint(minimumSizeHint)
 
 
 def init():
     LOCAL_DIR = path.dirname(path.realpath(__file__))
     app = QtWidgets.QApplication([])
-    config = conf.getConf()
-    if not isLinux():
-        apply_stylesheet(app, theme=config['theme'])
-        stylesheet = app.styleSheet()
-        with open(LOCAL_DIR + '/custom.css') as file:
-            app.setStyleSheet(stylesheet + file.read().format(**environ))
-            searchPaths = QIcon.fallbackSearchPaths()
-            searchPaths.append(':/icons')
-            QIcon.setFallbackSearchPaths(searchPaths)
-            if config['theme'].find('light') != -1:
-                QIcon.setThemeName('mpp')
-            else:
-                QIcon.setThemeName('mpp-dark')
+    if not isLinux() and not isBSD():
+        searchPaths = QIcon.fallbackSearchPaths()
+        searchPaths.append(':/icons')
+        QIcon.setFallbackSearchPaths(searchPaths)
+        QIcon.setThemeName('breeze')
 
     defaultLocale = QLocale.system().name()
     if defaultLocale == 'es_ES':

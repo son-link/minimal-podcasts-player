@@ -1,8 +1,10 @@
 import podcastparser
 from urllib.request import urlopen, Request, HTTPError, URLError
 from PyQt5.QtCore import pyqtSignal, QThread, QVariant
-from os import getenv
-import pathlib, platform
+from os import getenv, path
+import pathlib
+import platform
+import urllib
 
 
 def parseFeed(url):
@@ -77,7 +79,7 @@ def getAppDataDir():
 
 
 def getAppCacheDir():
-    """Return the O.S. default user appdata dir"""
+    """Return the O.S. default user cache dir"""
 
     path = ''
     if getenv('HOME'):
@@ -95,3 +97,37 @@ def isLinux():
         return True
     else:
         return False
+
+
+def isBSD():
+    """Return True if the platform is FreeBSD"""
+    if platform.system() == 'FreeBSD':
+        return True
+    else:
+        return False
+
+
+def isWindows():
+    """Return True if the platform is Windows"""
+    if platform.system() == 'Windows':
+        return True
+    else:
+        return False
+
+
+def downloadCover(url, filename):
+    "Download the cover"
+    cover = path.join(getAppCacheDir(), filename)
+    opener = urllib.request.URLopener()
+    opener.addheader('User-Agent', 'Mozilla/5.0')
+    filename, headers = opener.retrieve(url, cover)
+
+
+def coverExist(filename):
+    """ Check if the podcast cover exists, if not, download it again"""
+    cover = path.join(getAppCacheDir(), filename)
+
+    if not path.exists(cover):
+        return False
+
+    return True

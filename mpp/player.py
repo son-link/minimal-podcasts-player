@@ -1,7 +1,9 @@
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QCoreApplication
 from PyQt5.QtGui import QIcon, QPixmap
 from .utils import ms_to_time
+
+_translate = QCoreApplication.translate
 
 
 class Player(QMediaPlayer):
@@ -23,14 +25,25 @@ class Player(QMediaPlayer):
     def add(self, data):
         """Add track to the queue"""
         queueData = {
+            'idEpisode': data['idEpisode'],
             'pc_title': data['pc_title'],
             'title': data['title'],
             'url': data['url'],
             'date': data['date_format'],
-            'description': data['description']
+            'description': data['description'],
+            'localfile': data['localfile']
         }
+        url = data['url']
+        if data['localfile']:
+            url = 'file://' + data['localfile']
+
         self.queueData.append(queueData)
-        self.queueList.addMedia(QMediaContent(QUrl(data['url'])))
+        self.queueList.addMedia(QMediaContent(QUrl(url)))
+        self.parent.playBtn.setEnabled(True)
+        self.parent.stopBtn.setEnabled(True)
+        self.parent.back10Btn.setEnabled(True)
+        self.parent.for10Btn.setEnabled(True)
+        self.parent.timeSlider.setEnabled(True)
 
     def playPause(self):
         icon = QIcon.fromTheme("media-playback-pause")
@@ -99,40 +112,41 @@ class Player(QMediaPlayer):
         self.parent.timeSlider.blockSignals(False)
 
     def playlistPosChanged(self):
-        pos = self.queueList.currentIndex()
-        data = self.queueData[pos]
-        self.parent.curPCLabel.setText(data['pc_title'])
-        self.parent.curTrackName.setText(data['title'])
-        windowTitle = '{0} - {1}'.format(data['pc_title'], data['title'])
-        self.parent.setWindowTitle(windowTitle)
-        if self.queueList.mediaCount() > 1:
-            if pos < self.queueList.mediaCount() - 1:
-                self.parent.queueNextBtn.setEnabled(True)
-            else:
-                self.parent.queueNextBtn.setEnabled(False)
-
-            if pos > 0:
-                self.parent.queuePrevBtn.setEnabled(True)
-            else:
-                self.parent.queuePrevBtn.setEnabled(False)
-
-            if pos < self.queueList.mediaCount():
-                prevPos = 0
-                if self.position < pos:
-                    prevPos = pos - 1
+        if self.queueList.mediaCount() > 0:
+            pos = self.queueList.currentIndex()
+            data = self.queueData[pos]
+            self.parent.curPCLabel.setText(data['pc_title'])
+            self.parent.curTrackName.setText(data['title'])
+            windowTitle = '{0} - {1}'.format(data['pc_title'], data['title'])
+            self.parent.setWindowTitle(windowTitle)
+            if self.queueList.mediaCount() > 1:
+                if pos < self.queueList.mediaCount() - 1:
+                    self.parent.queueNextBtn.setEnabled(True)
                 else:
-                    prevPos = pos + 1
-                prevItem = self.parent.queueList.item(prevPos)
-                prevWidget = self.parent.queueList.itemWidget(prevItem)
-                if prevItem:
-                    prevWidget.statusIcon.setPixmap(QPixmap())
+                    self.parent.queueNextBtn.setEnabled(False)
 
-        self.position = pos
-        item = self.parent.queueList.item(pos)
-        widget = self.parent.queueList.itemWidget(item)
-        if widget:
-            icon = QIcon.fromTheme("media-playback-start")
-            widget.statusIcon.setPixmap(icon.pixmap(16, 16))
+                if pos > 0:
+                    self.parent.queuePrevBtn.setEnabled(True)
+                else:
+                    self.parent.queuePrevBtn.setEnabled(False)
+
+                if pos < self.queueList.mediaCount():
+                    prevPos = 0
+                    if self.position < pos:
+                        prevPos = pos - 1
+                    else:
+                        prevPos = pos + 1
+                    prevItem = self.parent.queueList.item(prevPos)
+                    prevWidget = self.parent.queueList.itemWidget(prevItem)
+                    if prevItem:
+                        prevWidget.statusIcon.setPixmap(QPixmap())
+
+            self.position = pos
+            item = self.parent.queueList.item(pos)
+            widget = self.parent.queueList.itemWidget(item)
+            if widget:
+                icon = QIcon.fromTheme("media-playback-start")
+                widget.statusIcon.setPixmap(icon.pixmap(16, 16))
 
     def setVolume(self, volume):
         self.player.setVolume(volume)
@@ -151,5 +165,25 @@ class Player(QMediaPlayer):
         """ Delete the track and her data from position"""
         self.queueData.pop(position)
         self.queueList.removeMedia(position)
-        if (position == self.position):
-            self.playlistPosChanged()
+        if self.queueList.mediaCount() > 0:
+            if position == self.position:
+                self.playlistPosChanged()
+        else:
+            self.parent.setWindowTitle('Minimal Podcasts Player')
+            self.parent.infoEpisodeLabel.setText('')
+            self.parent.curPCLabel.setText(_translate("MainWindow", "Podcast"))
+            self.parent.curTrackName.setText(_translate("MainWindow", "Episode Title"))
+            self.parent.queuePrevBtn.setEnabled(False)
+            self.parent.queueNextBtn.setEnabled(False)
+            self.parent.playBtn.setEnabled(False)
+            self.parent.stopBtn.setEnabled(False)
+            self.parent.back10Btn.setEnabled(False)
+            self.parent.for10Btn.setEnabled(False)
+            self.parent.timeSlider.setEnabled(False)
+
+    def changeUrl(self, idEpisode, url):
+        pos = next((i for i, item in enumerate(self.queueData) if item['idEpisode'] == idEpisode), None)
+        if (pos):
+            self.queueData[pos]['url'] = url
+            self.queueList.removeMedia(pos)
+            self.queueList.insertMedia(pos, QMediaContent(QUrl(url)))

@@ -11,3 +11,25 @@
 * Add some icons.
 * Now the icons change on change theme between light and dark palettes.
 * Other minos changes.
+
+### 0.3.0
+
+* Fix a error on generate the default app config.
+* Drop the theme selector and qt-material as dependence. The AppIMage and Windows now use the Fusion theme.
+* The mpp and mpp-dark icons have been removed, now the Windows icons and the AppImage use a customized version of the [KDE's Breeze icon theme](https://github.com/KDE/breeze-icons).
+* A submenu has been added in the podcast listing with an option: unsubscribe from the podcast you click on.
+* The episode download system has begun to be implemented. **Note**: at the moment only one download at a time.
+* New functions have been added within utils:
+	* isWindons: return True is the applications runs under Windows.
+	* isBSD: return True is the applications runs under FreeBSD (not tested on other BSD-based systems).
+	* downloadCover: Download the Podcast's cover.
+	* coverExist: Check if the cover exists, is not, download it again.
+
+* A two new fields, **coverUrl** and **filename**, has been added to the podcasts and episodes tables respectively in the database:
+  * coverUrl: The url of the podcast's cover, in case it is necessary to download it again in the future (for example the cache has been cleared).
+  * filename: The path to the audio if downloaded, to play it instead of streaming it.
+
+**NOTE:** Because of these 2 new columns it is necessary to update the database, so the program takes a little longer to start, depending on the number of podcasts you have subscribed to.
+
+* Now is posible download the episodes and added two news options for this.
+* Other minor changes, corrections and performance.

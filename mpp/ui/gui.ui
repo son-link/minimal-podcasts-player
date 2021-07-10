@@ -50,6 +50,9 @@
         <property name="leftMargin">
          <number>6</number>
         </property>
+        <property name="topMargin">
+         <number>6</number>
+        </property>
         <property name="rightMargin">
          <number>6</number>
         </property>
@@ -92,7 +95,7 @@
           </property>
           <property name="icon">
            <iconset theme="media-skip-backward">
-            <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -101,12 +104,15 @@
         </item>
         <item>
          <widget class="QPushButton" name="back10Btn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset theme="media-seek-backward">
-            <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -119,12 +125,15 @@
            <string notr="true">0:00:00</string>
           </property>
           <property name="margin">
-           <number>2</number>
+           <number>4</number>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QSlider" name="timeSlider">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="maximum">
            <number>100</number>
           </property>
@@ -139,12 +148,15 @@
            <string notr="true">0:00:00</string>
           </property>
           <property name="margin">
-           <number>2</number>
+           <number>4</number>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="playBtn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
@@ -153,7 +165,7 @@
           </property>
           <property name="icon">
            <iconset theme="media-playback-start">
-            <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -162,12 +174,15 @@
         </item>
         <item>
          <widget class="QPushButton" name="stopBtn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset theme="media-playback-stop">
-            <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -176,12 +191,15 @@
         </item>
         <item>
          <widget class="QPushButton" name="for10Btn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset theme="media-seek-forward">
-            <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -201,7 +219,7 @@
           </property>
           <property name="icon">
            <iconset theme="media-skip-forward">
-            <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -215,7 +233,7 @@
           </property>
           <property name="icon">
            <iconset theme="applications-system">
-            <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="popupMode">
            <enum>QToolButton::MenuButtonPopup</enum>
@@ -232,7 +250,7 @@
           </property>
           <property name="icon">
            <iconset theme="audio-volume-high">
-            <normaloff>.</normaloff>.</iconset>
+            <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
           </property>
           <property name="popupMode">
            <enum>QToolButton::InstantPopup</enum>
@@ -496,7 +514,7 @@
                     <enum>QAbstractItemView::SelectRows</enum>
                    </property>
                    <attribute name="horizontalHeaderVisible">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </attribute>
                    <attribute name="verticalHeaderVisible">
                     <bool>false</bool>
@@ -584,6 +602,11 @@
          <attribute name="title">
           <string>Downloads</string>
          </attribute>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0">
+           <widget class="QListWidget" name="downloadsList"/>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
@@ -595,6 +618,7 @@
  </widget>
  <resources>
   <include location="../images.qrc"/>
+  <include location="../../../../.designer/images.qrc"/>
  </resources>
  <connections/>
 </ui>

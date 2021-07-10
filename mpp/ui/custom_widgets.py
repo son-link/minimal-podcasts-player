@@ -5,8 +5,8 @@ This file include all custom widgets use in the program
 
 from PyQt5.QtCore import Qt
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QIcon, QPixmap, QFont
-from ..utils import getAppCacheDir
+from PyQt5.QtGui import QPixmap, QFont
+from ..utils import getAppCacheDir, coverExist, downloadCover
 
 cache_dir = getAppCacheDir()
 
@@ -28,8 +28,28 @@ class podcastWidget(QtWidgets.QWidget):
 
         coverLabel = QtWidgets.QLabel()
         layout.addWidget(coverLabel)
-        coverImage = QPixmap(cache_dir+'/'+data['cover'])
-        coverLabel.setPixmap(coverImage.scaled(40, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
+        if coverExist(data['cover']):
+            coverImage = QPixmap(cache_dir+'/'+data['cover'])
+            coverLabel.setPixmap(
+                coverImage.scaled(
+                    40,
+                    40,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation
+                )
+            )
+        else:
+            downloadCover(data['coverUrl'], data['cover'])
+            coverImage = QPixmap(cache_dir+'/'+data['cover'])
+            coverLabel.setPixmap(
+                coverImage.scaled(
+                    40,
+                    40,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation
+                )
+            )
 
         self.infoWidget = QtWidgets.QWidget()
 
@@ -42,7 +62,9 @@ class podcastWidget(QtWidgets.QWidget):
         layout2.addWidget(title)
 
         font.setPointSize(8)
-        label = QtWidgets.QLabel('{} episodio(s)'.format(data['total_episodes']))
+        label = QtWidgets.QLabel(
+            '{} episodio(s)'.format(data['total_episodes'])
+        )
         label.setFont(font)
         layout2.addWidget(label)
 

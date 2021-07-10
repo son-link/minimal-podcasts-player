@@ -38,6 +38,7 @@ class addDialog(QtWidgets.QDialog):
         if ivoox:
             ivoox = ivoox[0]
             url = 'https://www.ivoox.com/{0}_fg_{1}_filtro_1.xml'.format(ivoox[1], ivoox[2])
+        self.parent.statusBar().showMessage(_translate('MainWindow', 'Adding podcast....'))
         self.addPCThread = db.addPodcast(self, url)
         self.addPCThread.podcast.connect(self.callback)
         self.addPCThread.start()
@@ -84,6 +85,7 @@ class addDialog(QtWidgets.QDialog):
             self.ui.addSearchBtn.setEnabled(True)
 
     def addFromSearch(self):
+        self.ui.addSearchBtn.setEnabled(False)
         url = self.ui.searchResult.currentItem().value
         self.fromUrl(url)
 
