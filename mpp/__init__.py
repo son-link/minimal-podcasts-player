@@ -159,7 +159,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.addDialog.exec_()
 
     def addNewToList(self, idPodcast, length):
-        if (idPodcast):
+        if (idPodcast and idPodcast != 0):
             self.addDialog.close()
             data = db.getPodcast(idPodcast)
             data['total_episodes'] = length

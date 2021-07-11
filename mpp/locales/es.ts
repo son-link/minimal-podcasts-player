@@ -4,47 +4,47 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../ui/Ui_gui.py" line="290"/>
+        <location filename="../ui/Ui_gui.py" line="295"/>
         <source>Podcast</source>
         <translation>Podcast</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="291"/>
+        <location filename="../ui/Ui_gui.py" line="296"/>
         <source>Episode Title</source>
         <translation>Titulo del episodio</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="293"/>
+        <location filename="../ui/Ui_gui.py" line="298"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="294"/>
+        <location filename="../ui/Ui_gui.py" line="299"/>
         <source>Podcasts</source>
         <translation>Podcasts</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="295"/>
+        <location filename="../ui/Ui_gui.py" line="300"/>
         <source>Web</source>
         <translation>Web</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="296"/>
+        <location filename="../ui/Ui_gui.py" line="301"/>
         <source>Description</source>
-        <translation>Descripcion</translation>
+        <translation>Descripción</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="297"/>
+        <location filename="../ui/Ui_gui.py" line="302"/>
         <source>Home</source>
         <translation>Inicio</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="298"/>
+        <location filename="../ui/Ui_gui.py" line="303"/>
         <source>Queue</source>
         <translation>Lista de espera</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="299"/>
+        <location filename="../ui/Ui_gui.py" line="304"/>
         <source>Downloads</source>
         <translation>Descargas</translation>
     </message>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../__init__.py" line="352"/>
         <source>Remove from queue</source>
-        <translation>Elimilar de la cola</translation>
+        <translation>Eliminar de la cola</translation>
     </message>
     <message>
         <location filename="../__init__.py" line="382"/>
@@ -99,9 +99,14 @@
         <translation>Desuscribir</translation>
     </message>
     <message>
-        <location filename="../conf.py" line="80"/>
+        <location filename="../conf.py" line="93"/>
         <source>Select downloads folder</source>
         <translation>Seleccionar carpeta de descargas</translation>
+    </message>
+    <message>
+        <location filename="../podcasts.py" line="43"/>
+        <source>Adding podcast....</source>
+        <translation>Añadiendo podcast....</translation>
     </message>
 </context>
 <context>
@@ -131,6 +136,16 @@
         <source>Search</source>
         <translation>Buscar</translation>
     </message>
+    <message>
+        <location filename="../podcasts.py" line="51"/>
+        <source>URL not valid</source>
+        <translation>URL no válida</translation>
+    </message>
+    <message>
+        <location filename="../podcasts.py" line="58"/>
+        <source>URL not valid or not contain a RSS Feed</source>
+        <translation>URl no válida o no contiene un Feed RSS</translation>
+    </message>
 </context>
 <context>
     <name>configDialog</name>
@@ -157,7 +172,7 @@
     <message>
         <location filename="../ui/Ui_config.py" line="62"/>
         <source>Rename episodes after download</source>
-        <translation>Renombrar episodios despues de descargar</translation>
+        <translation>Renombrar episodios después de descargar</translation>
     </message>
 </context>
 </TS>

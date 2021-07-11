@@ -3,7 +3,7 @@ from configparser import ConfigParser
 from .ui import Ui_config
 from .utils import getAppDataDir
 from os import path
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, Qt
 
 config_dir = getAppDataDir()
 _translate = QCoreApplication.translate
@@ -53,6 +53,8 @@ class configDialog(QtWidgets.QDialog):
         self.ui = Ui_config.Ui_configDialog()
         # Run the .setupUi() method to show the GUI
         self.ui.setupUi(self)
+        self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
+
 
         self.ui.buttonBox.accepted.connect(self.saveConf)
         self.ui.selDownFolder.clicked.connect(self.selDownFolder)

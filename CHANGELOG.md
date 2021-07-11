@@ -33,3 +33,12 @@
 
 * Now is posible download the episodes and added two news options for this.
 * Other minor changes, corrections and performance.
+
+### 0.3.1
+
+* Solved some problems when clicking the add podcast button and the field is empty, the url is not valid or it is valid but does not contain an RSS Feed.
+* Remove the ? button in the window title on Add Podcast and Configure dialogs.
+* slightly increased the text size in the title of the podcast and the episode being played back.
+* The positions of the volume and options menu buttons have been exchanged.
+* Add some translations.
+* Thanks to David Linares, member of SystemInside's Telegram group for report the bug and provide several ideas.
