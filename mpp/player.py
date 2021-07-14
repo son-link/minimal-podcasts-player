@@ -119,6 +119,7 @@ class Player(QMediaPlayer):
             self.parent.curPCLabel.setText(data['pc_title'])
             self.parent.curTrackName.setText(data['title'])
             self.parent.curTrackName.setToolTip(data['title'])
+            self.parent.infoEpisodeLabel.setText('')
             windowTitle = '{0} - {1}'.format(data['pc_title'], data['title'])
             self.parent.setWindowTitle(windowTitle)
             if self.queueList.mediaCount() > 1:
