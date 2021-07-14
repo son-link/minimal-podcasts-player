@@ -112,6 +112,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.back10Btn.clicked.connect(self.player.rev10Secs)
         self.for10Btn.clicked.connect(self.player.for10Secs)
         self.queueList.clicked.connect(self.getEpisodeData)
+        self.queueList.doubleClicked.connect(self.changeEpisode)
         self.queuePrevBtn.clicked.connect(self.player.queueList.previous)
         self.queueNextBtn.clicked.connect(self.player.queueList.next)
 
@@ -122,10 +123,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.getNewEpisodes()
 
         self.dw = download.Downloads()
-
-    def showEpisodeInfo(self, item):
-        description = self.podcastsList.currentItem().value
-        self.infoPodcastLabel.setText(description)
 
     def playPodcast(self, pressed):
         source = self.sender()
@@ -433,6 +430,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.player.queueList.clear()
         self.add2queue(None, row)
         self.player.startPlay()
+
+    def changeEpisode(self, w):
+        row = w.row()
+        self.player.changePos(row)
+        self.getEpisodeData(w)
 
 
 def init():

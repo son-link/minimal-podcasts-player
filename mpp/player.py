@@ -190,3 +190,16 @@ class Player(QMediaPlayer):
             self.queueData[pos]['url'] = url
             self.queueList.removeMedia(pos)
             self.queueList.insertMedia(pos, QMediaContent(QUrl(url)))
+
+    def changePos(self, pos):
+        prevPos = self.queueList.currentIndex()
+        if prevPos > -1:
+            prevItem = self.parent.queueList.item(prevPos)
+            prevWidget = self.parent.queueList.itemWidget(prevItem)
+            if prevItem:
+                prevWidget.statusIcon.setPixmap(QPixmap())
+
+        self.queueList.setCurrentIndex(pos)
+        self.playlistPosChanged()
+        if self.player.state() == QMediaPlayer.StoppedState or self.player.state() == QMediaPlayer.PausedState:
+            self.player.play()
