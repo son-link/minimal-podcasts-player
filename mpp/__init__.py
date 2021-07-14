@@ -87,6 +87,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.episodesTable.customContextMenuRequested.connect(
             self.episodesMenu
         )
+        self.episodesTable.doubleClicked.connect(self.dcPlayEpisode)
         self.episodesTable.setWordWrap(True)
 
         self.queueList.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -424,6 +425,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         minimumSizeHint = self.downloadsList.minimumSizeHint()
         minimumSizeHint.setHeight(48)
         myItem.setSizeHint(minimumSizeHint)
+
+    def dcPlayEpisode(self, w):
+        row = w.row()
+        self.player.queueData = []
+        self.queueList.clear()
+        self.player.queueList.clear()
+        self.add2queue(None, row)
+        self.player.startPlay()
 
 
 def init():
