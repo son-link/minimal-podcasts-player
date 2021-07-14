@@ -70,6 +70,7 @@ class Player(QMediaPlayer):
         self.queueList.setCurrentIndex(0)
         self.parent.curPCLabel.setText(data['pc_title'])
         self.parent.curTrackName.setText(data['title'])
+        self.parent.curTrackName.setToolTip(data['title'])
         self.player.play()
         icon = QIcon.fromTheme("media-playback-pause")
         self.parent.playBtn.setIcon(icon)
@@ -117,6 +118,7 @@ class Player(QMediaPlayer):
             data = self.queueData[pos]
             self.parent.curPCLabel.setText(data['pc_title'])
             self.parent.curTrackName.setText(data['title'])
+            self.parent.curTrackName.setToolTip(data['title'])
             windowTitle = '{0} - {1}'.format(data['pc_title'], data['title'])
             self.parent.setWindowTitle(windowTitle)
             if self.queueList.mediaCount() > 1:

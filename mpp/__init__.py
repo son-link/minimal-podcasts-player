@@ -92,18 +92,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.queueList.setContextMenuPolicy(Qt.CustomContextMenu)
         self.queueList.customContextMenuRequested.connect(self.queueMenu)
 
-        volWidget = QtWidgets.QWidget()
-        volLayout = QtWidgets.QHBoxLayout(volWidget)
-        self.volumeSlider = QtWidgets.QSlider(Qt.Vertical, self)
+        icon = QIcon.fromTheme("audio-volume-high")
+        self.iconVol.setPixmap(icon.pixmap(16, 16))
         self.volumeSlider.setMaximum(100)
         self.volumeSlider.setMinimum(0)
-        self.volumeSlider.setValue(100)
-        volLayout.addWidget(self.volumeSlider)
-        widgetAction = QtWidgets.QWidgetAction(self.volumeBtn)
-        widgetAction.setDefaultWidget(volWidget)
-        widgetMenu = QtWidgets.QMenu(self.volumeBtn)
-        widgetMenu.addAction(widgetAction)
-        self.volumeBtn.setMenu(widgetMenu)
+        self.volumeSlider.setValue(self.player.volume)
 
         self.episodesCount = 0
         self.episodesData = []
