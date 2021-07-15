@@ -44,6 +44,7 @@ class Player(QMediaPlayer):
         self.parent.back10Btn.setEnabled(True)
         self.parent.for10Btn.setEnabled(True)
         self.parent.timeSlider.setEnabled(True)
+        self.parent.timeSlider.setEnabled(True)
 
     def playPause(self):
         icon = QIcon.fromTheme("media-playback-pause")
