@@ -4,109 +4,119 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../ui/Ui_gui.py" line="295"/>
+        <location filename="../ui/Ui_gui.py" line="359"/>
         <source>Podcast</source>
         <translation>Podcast</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="296"/>
+        <location filename="../ui/Ui_gui.py" line="360"/>
         <source>Episode Title</source>
         <translation>Titulo del episodio</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="298"/>
+        <location filename="../ui/Ui_gui.py" line="361"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="299"/>
+        <location filename="../ui/Ui_gui.py" line="362"/>
         <source>Podcasts</source>
         <translation>Podcasts</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="300"/>
+        <location filename="../ui/Ui_gui.py" line="363"/>
         <source>Web</source>
         <translation>Web</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="301"/>
+        <location filename="../ui/Ui_gui.py" line="364"/>
         <source>Description</source>
         <translation>Descripción</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="302"/>
+        <location filename="../ui/Ui_gui.py" line="366"/>
         <source>Home</source>
         <translation>Inicio</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="303"/>
+        <location filename="../ui/Ui_gui.py" line="367"/>
         <source>Queue</source>
         <translation>Lista de espera</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_gui.py" line="304"/>
+        <location filename="../ui/Ui_gui.py" line="368"/>
         <source>Downloads</source>
         <translation>Descargas</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="51"/>
+        <location filename="../__init__.py" line="55"/>
         <source>Add podcast</source>
         <translation>Añadir podcast</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="58"/>
+        <location filename="../__init__.py" line="62"/>
         <source>Update</source>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="65"/>
+        <location filename="../__init__.py" line="69"/>
         <source>Configure</source>
         <translation>Configurar</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="79"/>
+        <location filename="../__init__.py" line="83"/>
         <source>Episode</source>
         <translation>Episodio</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="79"/>
+        <location filename="../__init__.py" line="83"/>
         <source>Published</source>
         <translation>Publicado</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="79"/>
+        <location filename="../__init__.py" line="83"/>
         <source>Duration</source>
         <translation>Duración</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="313"/>
+        <location filename="../__init__.py" line="317"/>
         <source>Add to queue</source>
         <translation>Añadir a la cola</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="332"/>
+        <location filename="../__init__.py" line="336"/>
         <source>Searching new episodes....</source>
         <translation>Buscando nuevos episodios....</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="352"/>
+        <location filename="../__init__.py" line="356"/>
         <source>Remove from queue</source>
         <translation>Eliminar de la cola</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="382"/>
+        <location filename="../__init__.py" line="386"/>
         <source>Unsubscribe</source>
         <translation>Desuscribir</translation>
     </message>
     <message>
-        <location filename="../conf.py" line="93"/>
+        <location filename="../conf.py" line="95"/>
         <source>Select downloads folder</source>
         <translation>Seleccionar carpeta de descargas</translation>
     </message>
     <message>
-        <location filename="../podcasts.py" line="43"/>
+        <location filename="../podcasts.py" line="46"/>
         <source>Adding podcast....</source>
         <translation>Añadiendo podcast....</translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_gui.py" line="365"/>
+        <source>Page 1 of 1</source>
+        <translation>Página 1 de 1</translation>
+    </message>
+    <message>
+        <location filename="../__init__.py" line="467"/>
+        <source>Page {0} of {1}</source>
+        <translation>Página {0} de {1}</translation>
     </message>
 </context>
 <context>
@@ -137,12 +147,12 @@
         <translation>Buscar</translation>
     </message>
     <message>
-        <location filename="../podcasts.py" line="51"/>
+        <location filename="../podcasts.py" line="54"/>
         <source>URL not valid</source>
         <translation>URL no válida</translation>
     </message>
     <message>
-        <location filename="../podcasts.py" line="58"/>
+        <location filename="../podcasts.py" line="61"/>
         <source>URL not valid or not contain a RSS Feed</source>
         <translation>URl no válida o no contiene un Feed RSS</translation>
     </message>

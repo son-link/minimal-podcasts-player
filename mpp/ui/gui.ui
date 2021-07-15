@@ -14,7 +14,7 @@
    <string notr="true">Minimal Podcasts Player</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../images.qrc">
     <normaloff>:/img/icon.svg</normaloff>:/img/icon.svg</iconset>
   </property>
   <property name="styleSheet">
@@ -545,7 +545,7 @@
                          <string notr="true"/>
                         </property>
                         <property name="pixmap">
-                         <pixmap>:/img/no-cover.svg</pixmap>
+                         <pixmap resource="../images.qrc">:/img/no-cover.svg</pixmap>
                         </property>
                         <property name="scaledContents">
                          <bool>false</bool>
@@ -661,7 +661,8 @@
                       <string/>
                      </property>
                      <property name="icon">
-                      <iconset theme="go-previous-view"/>
+                      <iconset theme="go-previous-view">
+                       <normaloff>.</normaloff>.</iconset>
                      </property>
                      <property name="flat">
                       <bool>true</bool>
@@ -671,7 +672,7 @@
                    <item>
                     <widget class="QLabel" name="paginationLabel">
                      <property name="text">
-                      <string>View 20/200</string>
+                      <string>Page 1 of 1</string>
                      </property>
                     </widget>
                    </item>
@@ -681,7 +682,8 @@
                       <string/>
                      </property>
                      <property name="icon">
-                      <iconset theme="go-next-view"/>
+                      <iconset theme="go-next-view">
+                       <normaloff>.</normaloff>.</iconset>
                      </property>
                      <property name="flat">
                       <bool>true</bool>

@@ -362,7 +362,7 @@ class Ui_MainWindow(object):
         self.podcastTitle.setText(_translate("MainWindow", "Podcasts"))
         self.podcastWeb.setText(_translate("MainWindow", "Web"))
         self.podcastDesc.setText(_translate("MainWindow", "Description"))
-        self.paginationLabel.setText(_translate("MainWindow", "View 20/200"))
+        self.paginationLabel.setText(_translate("MainWindow", "Page 1 of 1"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Home"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Queue"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Downloads"))

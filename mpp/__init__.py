@@ -230,6 +230,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         thread.episodes.connect(self.insertEpisode)
         thread.start()
         self.podcastSelected = idPodcast
+        self.paginationLabel.setText(
+                _translate(
+                    'MainWindow',
+                    'Page {0} of {1}'
+                ).format(self.currentPage+1, self.totalPages)
+            )
 
     def insertEpisode(self, data, preppend=False):
         btnWidget = QtWidgets.QWidget()
@@ -455,7 +461,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.getEpisodes()
 
     def paginationNext(self, w):
-        if self.currentPage < self.totalPages:
+        if self.currentPage < self.totalPages - 1:
             self.currentPage += 1
             self.getEpisodes()
 
