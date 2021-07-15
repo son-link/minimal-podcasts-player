@@ -153,9 +153,11 @@ class addPodcast(QThread):
 class getEpisodes(QThread):
     episodes = pyqtSignal(dict)
 
-    def __init__(self, parent, idPodcast):
+    def __init__(self, parent, idPodcast, offset=1):
         super(getEpisodes, self).__init__(parent)
         self.idPodcast = idPodcast
+        self.offset = offset
+        self.limit = 20
 
     def run(self):
         con = sqlite3.connect(db_dir + "mpp.db")
@@ -171,7 +173,8 @@ class getEpisodes(QThread):
             FROM episodes e
             INNER JOIN podcasts p on p.idPodcast = e.idPodcast
             WHERE e.idPodcast = {0}
-            ORDER BY e.date DESC""".format(self.idPodcast)
+            ORDER BY e.date DESC
+            LIMIT {1}, {2}""".format(self.idPodcast, self.offset, self.limit)
 
             cursor.execute(sql)
             rows = cursor.fetchall()
@@ -534,3 +537,24 @@ def addDownLocalfile(idEpisode, localfile):
     except sqlite3.Error as err:
         print(err)
         return False
+
+
+def getTotalEpisodes(idPodcast):
+    """Return the total of episodes"""
+    con = sqlite3.connect(db_dir + "mpp.db")
+    con.row_factory = dict_factory
+    cursor = con.cursor()
+    if not cursor:
+        print("Database Error", "Unable To Connect To The Database!")
+        return False
+    else:
+        sql = """SELECT COUNT(idEpisode) AS total
+        FROM episodes
+        WHERE idPodcast = {0}
+        ORDER BY date DESC
+        """.format(idPodcast)
+
+        cursor.execute(sql)
+        data = cursor.fetchone()
+        con.close()
+        return data['total']

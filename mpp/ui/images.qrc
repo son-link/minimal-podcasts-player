@@ -20,5 +20,7 @@
     <file>icons/breeze/actions/scalable/dialog-cancel.svg</file>
     <file>icons/breeze/actions/scalable/go-down.svg</file>
     <file>icons/breeze/actions/scalable/search.svg</file>
+    <file>icons/breeze/actions/scalable/go-next-view.svg</file>
+    <file>icons/breeze/actions/scalable/go-previous-view.svg</file>
   </qresource>
 </RCC>

@@ -8,6 +8,7 @@ from PyQt5.QtCore import (
 )
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon, QCursor, QPixmap
+from math import ceil
 from .player import Player
 from .utils import (
     addNewEpidodes,
@@ -43,6 +44,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
         self.config = conf.getConf()
+        self.episodesPerPage = 20
+        self.currentPage = 0
+        self.totalPages = 1
 
         self.player = Player(self)
 
@@ -115,6 +119,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.queueList.doubleClicked.connect(self.changeEpisode)
         self.queuePrevBtn.clicked.connect(self.player.queueList.previous)
         self.queueNextBtn.clicked.connect(self.player.queueList.next)
+
+        self.prevDataBtn.clicked.connect(self.paginationPrev)
+        self.nextDataBtn.clicked.connect(self.paginationNext)
 
         thread = db.getPodcasts(self)
         thread.podcast.connect(self.addPCList)
@@ -192,7 +199,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         if self.player.queueList.mediaCount() > 1:
             self.queueNextBtn.setEnabled(True)
 
-    def getEpisodes(self, item):
+    def getEpisodes(self, item=None):
         self.episodesCount = 0
         self.lastEpisodePos = 0
         self.episodesData = []
@@ -212,8 +219,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             coverImage.scaled(128, 128, Qt.KeepAspectRatio)
         )
 
+        if item:
+            totalEpisodes = db.getTotalEpisodes(idPodcast)
+            self.currentPage = 0
+            self.totalPages = ceil(totalEpisodes / self.episodesPerPage)
+
+        offset = (self.currentPage * self.episodesPerPage) + 1
         self.podcastDesc.setText(description)
-        thread = db.getEpisodes(self, idPodcast)
+        thread = db.getEpisodes(self, idPodcast, offset)
         thread.episodes.connect(self.insertEpisode)
         thread.start()
         self.podcastSelected = idPodcast
@@ -435,6 +448,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         row = w.row()
         self.player.changePos(row)
         self.getEpisodeData(w)
+
+    def paginationPrev(self, w):
+        if self.currentPage > 0:
+            self.currentPage -= 1
+            self.getEpisodes()
+
+    def paginationNext(self, w):
+        if self.currentPage < self.totalPages:
+            self.currentPage += 1
+            self.getEpisodes()
 
 
 def init():

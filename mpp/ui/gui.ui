@@ -491,7 +491,7 @@
                 </layout>
                </widget>
                <widget class="QWidget" name="widget_3" native="true">
-                <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,1">
+                <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,1,0">
                  <property name="leftMargin">
                   <number>0</number>
                  </property>
@@ -650,6 +650,46 @@
                    </attribute>
                   </widget>
                  </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1,0">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="prevDataBtn">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset theme="go-previous-view"/>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="paginationLabel">
+                     <property name="text">
+                      <string>View 20/200</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="nextDataBtn">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset theme="go-next-view"/>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
                 </layout>
                </widget>
               </widget>
@@ -746,7 +786,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="images.qrc"/>
+  <include location="../images.qrc"/>
  </resources>
  <connections/>
 </ui>
