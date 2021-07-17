@@ -327,6 +327,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         )
         addAction.triggered.connect(self.getEpisodesSelecteds)
         menu.addAction(addAction)
+
+        downIcon = QIcon.fromTheme('go-down')
+        downAction = QtWidgets.QAction(
+            downIcon,
+            _translate('MainWindow', 'Add to download queue'),
+            self
+        )
+        downAction.triggered.connect(self.addDownloads)
+        menu.addAction(downAction)
         # add other required actions
         menu.popup(QCursor.pos())
 
@@ -441,6 +450,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         minimumSizeHint = self.downloadsList.minimumSizeHint()
         minimumSizeHint.setHeight(48)
         myItem.setSizeHint(minimumSizeHint)
+
+    def addDownloads(self):
+        """Add multiple downloads"""
+        model = self.episodesTable.selectionModel()
+        rows = model.selectedRows()
+        rows.sort()
+        for row in rows:
+            pos = row.row()
+            print(pos)
+            self.addDownload(None, pos)
 
     def dcPlayEpisode(self, w):
         row = w.row()
