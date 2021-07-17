@@ -458,7 +458,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         rows.sort()
         for row in rows:
             pos = row.row()
-            print(pos)
             self.addDownload(None, pos)
 
     def dcPlayEpisode(self, w):
