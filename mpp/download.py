@@ -8,6 +8,7 @@ from .conf import getConf
 from .utils import getAppCacheDir
 from .db import addDownLocalfile
 from os import path
+from re import sub
 import pathlib
 
 cache_dir = getAppCacheDir()
@@ -91,16 +92,22 @@ class Widget(QtWidgets.QWidget):
 
         name = ''
         if 'rename_download' in self.conf and self.conf['rename_download']:
-            name = data['title'] + '.mp3'
+            name = data['title']
+            # Replace illegal characters in filename
+            name = sub(r'[\\/:*?"<>|]+', '-', name)
+            name += '.mp3'
         else:
             name = data['url'].split('/')[-1]
         directory = path.join(self.conf['download_folder'], data['pc_title'])
         pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
 
         self.filename = path.join(directory, name)
+        self.filename
+
         self.url = data['url']
 
     def updatePB(self, percent):
+        """ Update the progressbar of current download """
         global currentPos, downList, is_dw
         self.progressBar.setValue(percent)
         if percent == 100:
