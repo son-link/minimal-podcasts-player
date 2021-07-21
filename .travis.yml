@@ -2,7 +2,7 @@ language: shell
 jobs:
   include:
     - name: AppImage
-    dist: bionic
+      dist: bionic
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
