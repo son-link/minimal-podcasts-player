@@ -7,7 +7,7 @@ jobs:
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh ./build-appimage.sh; fi
 
-before_deploy:
+before_install:
   # Set up git user name and tag this commit
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
