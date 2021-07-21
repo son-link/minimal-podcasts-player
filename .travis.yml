@@ -11,14 +11,14 @@ before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
-  - export VERSION=$(date +'%Y%m%d%H%M%S')
-
-after_success:
-  - ls -lh out/* # Assuming you have some files in out/ that you would like to upload
-  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-  - bash upload.sh Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
-
-branches:
-  except:
-    - # Do not build tags that we create when we upload to GitHub Releases
-    - /^(?i:continuous)$/
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')}
+  - git tag $TRAVIS_TAG
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: Minimal_Podcasts_Player-$TRAVIS_TAG-x86_64.AppImage
+  cleanup: true
+  overwrite: true
+  on:
+    tags: false

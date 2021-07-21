@@ -15,7 +15,7 @@ chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh appimagetool-x8
 export CONDA_CHANNELS='local;conda-forge'
 export PIP_REQUIREMENTS='pyqt5 podcastparser .'
 export PIP_WORKDIR="$REPO_ROOT"
-export VERSION=$VERSION
+export VERSION=$TRAVIS_TAG
 
 # Deploy
 ./linuxdeploy-x86_64.AppImage \
