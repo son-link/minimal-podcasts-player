@@ -7,3 +7,4 @@ jobs:
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     sh ./build-appimage.sh
+    fi
