@@ -12,7 +12,8 @@ before_install:
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
   - VERSION=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')}
-  - git tag $VERSION
+  - export TRAVIS_TAG=${$VERSION)-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh ./build-appimage.sh; fi
 
