@@ -29,3 +29,12 @@ deploy:
   overwrite: true
   on:
     tags: false
+
+after_success:
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
+
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)$/
