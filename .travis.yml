@@ -1,0 +1,9 @@
+language: shell
+jobs:
+  include:
+    - name: AppImage
+    dist: bionic
+
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    sh ./build-appimage.sh
