@@ -17,7 +17,7 @@ deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   file_glob: true
-  file: **/*.{AppImage,exe}
-  skip_cleanup: true
+  file: Minimal_Podcasts_Player-$TRAVIS_TAG-x86_64.AppImage
+  cleanup: true
   on:
     tags: true
