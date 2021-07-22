@@ -16,15 +16,15 @@ env:
 before_install:
   # Set up git user name and tag this commit
   - VERSION=$(date +'%Y%m%d%H%M%S')
-install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      sh ./build-appimage.sh;
-    else;
-      pip3 install --upgrade pip;
-      pip3 install pyinstaller .;
-      cd bin;
-      pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/ ;locales;mpp/locales";
-    fi
+install: >
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    sh ./build-appimage.sh
+  else
+    pip3 install --upgrade pip
+    pip3 install pyinstaller .
+    cd bin
+    pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/locales;mpp/locales"
+  fi
 
 after_success:
   - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
