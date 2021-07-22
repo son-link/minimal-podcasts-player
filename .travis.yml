@@ -26,9 +26,13 @@ install: >
     pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/locales;mpp/locales"
   fi
 
-after_success:
-  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-  - bash upload.sh Minimal_Podcasts_Player-$VERSION-x86_64.AppImage bin/dist/minimal-podcasts-player.exe
+after_success: >
+  wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  chmod +x upload.sh
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    ./upload.sh Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
+  else
+    ./upload.sh bin/dist/minimal-podcasts-player.exe
 
 branches:
   except:
