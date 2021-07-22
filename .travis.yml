@@ -12,8 +12,6 @@ jobs:
 
 env:
   - VERSION=$(date +'%Y%m%d%H%M%S')
-  - STABLE_VERSION=0.3.1
-  - IS_STABLE=false
 install: >
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     sh ./build-appimage.sh
@@ -26,17 +24,17 @@ install: >
 
 before_deploy:
   # Set up git user name and tag this commit
-  - git config --local user.name "YOUR GIT USER NAME"
-  - git config --local user.email "YOUR GIT USER EMAIL"
+  - git config --local user.name "Alfonso Saavedra 'Son Link'"
+  - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - if [ $IS_STABLE = false ]; then export TRAVIS_TAG=continuous ; else export TRAVIS_TAG=v$STABLE_VERSION; VERSION=$STABLE_VERSION; fi
+  - export TRAVIS_TAG=continuous
   - git tag $TRAVIS_TAG
 deploy:
   provider: releases
   api_key: "$GITHUB_TOKEN"
   file:
     - Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
-    - bin/dist/minimal-podcasts-player.exe
+    - bin\dist\minimal-podcasts-player.exe
   skip_cleanup: true
 #after_success:
 #  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
