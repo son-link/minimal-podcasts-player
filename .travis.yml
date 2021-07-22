@@ -20,10 +20,10 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       sh ./build-appimage.sh;
     else;
-      pip3 install --upgrade pip
-      pip3 install pyinstaller .
-      cd bin
-      pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/locales;mpp/locales";
+      pip3 install --upgrade pip;
+      pip3 install pyinstaller .;
+      cd bin;
+      pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/ ;locales;mpp/locales";
     fi
 
 after_success:
