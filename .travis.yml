@@ -30,13 +30,13 @@ before_deploy:
   - export TRAVIS_TAG=continuous
   # - git tag $TRAVIS_TAG
   - echo $TRAVIS_BUILD_DIR
-#deploy:
-#  provider: releases
-#  api_key: "$GITHUB_TOKEN"
-#  file:
-#    - Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
-#    - C:\Users\travis\build\son-link\minimal-podcasts-player\bin\dist\minimal-podcasts-player.exe
-#  skip_cleanup: true
+deploy:
+  provider: releases
+  api_key: "$GITHUB_TOKEN"
+  file:
+    - Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
+    - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player.exe
+  skip_cleanup: true
 #after_success:
 #  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
 #  - chmod +x upload.sh
