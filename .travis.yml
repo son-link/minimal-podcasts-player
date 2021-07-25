@@ -35,7 +35,7 @@ deploy:
   api_key: "$GITHUB_TOKEN"
   file:
     - Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
-    - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player-$VERSION.exe
+    - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player-continuous.exe
   skip_cleanup: true
   overwrite: true
   draft: true
