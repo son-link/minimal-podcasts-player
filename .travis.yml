@@ -37,6 +37,7 @@ deploy:
     - Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
     - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player.exe
   skip_cleanup: true
+  overwrite: true
 #after_success:
 #  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
 #  - chmod +x upload.sh
