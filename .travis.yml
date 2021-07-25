@@ -39,6 +39,6 @@ deploy:
   skip_cleanup: true
   overwrite: true
   prerelease: true
-  tag_name: $TRAVIS_TAG
+  tag_name: continuous
   name: minimal-podcasts-player $TRAVIS_TAG
   body: Automated release from Travis CI.
