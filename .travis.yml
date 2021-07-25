@@ -9,17 +9,26 @@ jobs:
         - choco install python --version 3.9.0
         - python -m pip install --upgrade pip
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
+    - name: "Python 3.7.4 on macOS"
+      os: osx
+      osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
+      language: shell
 
 env:
   - VERSION=continuous
 install: >
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     sh ./build-appimage.sh
-  else
+  elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
     pip3 install --upgrade pip
     pip3 install pyinstaller .
     cd bin
     pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/locales;mpp/locales" -n minimal-podcasts-player-continuous
+  else
+    pip3 install --upgrade pip
+    pip3 install pyinstaller .
+    cd bin
+    pyinstaller -F --windowed minimal-podcasts-player -i mpp.icns --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/locales;mpp/locales" -n minimal-podcasts-player-continuous
   fi
 
 before_deploy:
