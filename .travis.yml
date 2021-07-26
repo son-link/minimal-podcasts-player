@@ -29,6 +29,10 @@ install: >
     pip3 install pyinstaller .
     cd bin
     pyinstaller --windowed minimal-podcasts-player -i mpp.icns --add-data "../mpp/ddbb.sql:mpp" --add-data "../mpp/locales:mpp/locales" -n minimal-podcasts-player-continuous
+    pushd dist
+    hdiutil create ./minimal-podcasts-player-continuous.dmg -srcfolder minimal-podcasts-player-continuous.app -ov
+    popd
+
   fi
 
 before_deploy:
@@ -45,7 +49,7 @@ deploy:
   file:
     - Minimal_Podcasts_Player-$VERSION-x86_64.AppImage
     - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player-continuous.exe
-    - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player-continuous.app
+    - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player-continuous.dmg
   skip_cleanup: true
   overwrite: true
   prerelease: true
