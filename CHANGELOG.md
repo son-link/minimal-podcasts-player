@@ -42,3 +42,13 @@
 * The positions of the volume and options menu buttons have been exchanged.
 * Add some translations.
 * Thanks to David Linares, member of SystemInside's Telegram group for report the bug and provide several ideas.
+
+### 0.4.0
+
+* New player layout.
+* Add option in episodes list for add more downloads.
+* Replace illegal characters in filename on downloads.
+* Added pagination
+* You can change track on queue with double click.
+* You can now start playing an episode by double clicking on the listing.
+* Remove episode info when changing episodes.

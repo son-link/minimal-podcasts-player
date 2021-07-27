@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="minimal-podcasts-player",
-    version="0.3.1",
+    version="0.4.0",
     description="Subscribe, listen and (in the future) download your favorite podcasts, quickly and easily.",
     author="Alfonso Saavedra 'Son Link'",
     author_email='sonlink.dourden@gmail.com',

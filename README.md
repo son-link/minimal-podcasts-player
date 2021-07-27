@@ -57,3 +57,7 @@ If you use Arch Linux, Manjaro or other Arch based distros a package is avaliabl
 ) (temporary) make by [BedexpStock](https://pixabay.com/es/users/bedexpstock-6161331/) and licensed under [Pixabay License](https://pixabay.com/es/service/license/)
 
 * no-cover.svg image make by me using a [Material Design Icons](https://material.io/resources/icons/) from Google and licensed under Apache license version 2.0.
+
+## Especial mentions:
+* Engels Tercero from the Telegram group SystemInside, for helping me package the Mac OS X application.
+* Thanks to David Linares, member of SystemInside's Telegram group for report the bug and provide several ideas.
