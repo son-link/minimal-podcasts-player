@@ -40,8 +40,7 @@ before_deploy:
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - export TRAVIS_TAG=continuous
-  - git tag -fa $TRAVIS_TAG
+  #- export TRAVIS_TAG=continuous
   # - git tag $TRAVIS_TAG
 deploy:
   - provider: releases
@@ -52,9 +51,6 @@ deploy:
     overwrite: true
     draft: true
     prerelease: true
-    tag_name: continuous
-    name: minimal-podcasts-player $TRAVIS_TAG
-    body: Automated release from Travis CI.
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = linux
@@ -80,3 +76,8 @@ deploy:
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = osx
+after_success:
+  - git config --local user.name "Alfonso Saavedra 'Son Link'"
+  - git config --local user.email "sonlink.dourden@gmail.com"
+  - git tag -f "continuous"
+  - git push --tags -f https://${GITHUB_TOKEN}@github.com/son-link/minimal-podcasts-player.git
