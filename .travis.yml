@@ -40,8 +40,9 @@ before_deploy:
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - export TARGET_COMMITISH="$(echo -n release/$TRAVIS_TAG)"
   - export TRAVIS_TAG=continuous
+  - export TARGET_COMMITISH="$(echo -n release/$TRAVIS_TAG)"
+
   # - git tag $TRAVIS_TAG
 deploy:
   provider: releases
