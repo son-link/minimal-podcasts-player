@@ -41,8 +41,6 @@ before_deploy:
   - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   # - export TRAVIS_TAG=$VERSION
-  - git tag -a "$VERSION" -m "v$VERSION"
-  - git push origin "v$VERSION"
 deploy:
   - provider: releases
     api_key: "$GITHUB_TOKEN"
