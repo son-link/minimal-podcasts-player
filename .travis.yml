@@ -1,4 +1,9 @@
 language: shell
+branches:
+  only:
+  - master
+  - v*
+
 jobs:
   include:
     - name: AppImage
@@ -40,7 +45,7 @@ before_deploy:
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - export TRAVIS_TAG=$VERSION
+  - export TRAVIS_TAG=0.4.0
 deploy:
   - provider: releases
     api_key: "$GITHUB_TOKEN"
