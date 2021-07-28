@@ -35,11 +35,12 @@ install: >
   fi
 
 before_deploy:
+  - echo $TRAVIS_TAG
   # Set up git user name and tag this commit
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - export TRAVIS_TAG=$VERSION
+  # - export TRAVIS_TAG=$VERSION
   - git tag -a "$VERSION" -m "v$VERSION"
   - git push origin "v$VERSION"
 deploy:
