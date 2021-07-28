@@ -2,7 +2,7 @@ language: shell
 branches:
   only:
   - master
-  - v*
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 
 jobs:
   include:
