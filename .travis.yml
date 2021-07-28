@@ -23,61 +23,50 @@ install: >
     pip3 install --upgrade pip
     pip3 install pyinstaller .
     cd bin
-    pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/locales;mpp/locales" -n minimal-podcasts-player-continuous
+    pyinstaller -F minimal-podcasts-player -i mpp.ico --add-data "../mpp/ddbb.sql;mpp" --add-data "../mpp/locales;mpp/locales" -n minimal-podcasts-player-0.4.0
   else
     pip3 install --upgrade pip
     pip3 install pyinstaller .
     cd bin
-    pyinstaller --windowed minimal-podcasts-player -i mpp.icns --add-data "../mpp/ddbb.sql:mpp" --add-data "../mpp/locales:mpp/locales" -n minimal-podcasts-player-continuous
+    pyinstaller --windowed minimal-podcasts-player -i mpp.icns --add-data "../mpp/ddbb.sql:mpp" --add-data "../mpp/locales:mpp/locales" -n minimal-podcasts-player-0.4.0
     pushd dist
-    hdiutil create ./minimal-podcasts-player-continuous.dmg -srcfolder minimal-podcasts-player-continuous.app -ov
+    hdiutil create ./minimal-podcasts-player-0.4.0.dmg -srcfolder minimal-podcasts-player-0.4.0.app -ov
     popd
+
   fi
 
 before_deploy:
-  - echo $TRAVIS_TAG
   # Set up git user name and tag this commit
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  # - export TRAVIS_TAG=$VERSION
+  - export TRAVIS_TAG=$VERSION
+  - git tag v$TRAVIS_TAG
 deploy:
   - provider: releases
     api_key: "$GITHUB_TOKEN"
     file:
-      - Minimal_Podcasts_Player-$VERSIOn-x86_64.AppImage
+      - Minimal_Podcasts_Player-0.4.0-x86_64.AppImage
     skip_cleanup: true
     overwrite: true
-    tag_name: $TRAVIS_TAG
-    target_commitish: $TRAVIS_COMMIT
-    name: $TRAVIS_TAG
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = linux
-      all_branches: true
   - provider: releases
     api_key: "$GITHUB_TOKEN"
     file:
-      - $TRAVIS_BUILD_DIR/bin/dist/*.exe
+      - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player-0.4.0.exe
     skip_cleanup: true
     overwrite: true
-    tag_name: $TRAVIS_TAG
-    target_commitish: $TRAVIS_COMMIT
-    name: $TRAVIS_TAG
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = windows
-      all_branches: true
   - provider: releases
     api_key: "$GITHUB_TOKEN"
     file:
-      - $TRAVIS_BUILD_DIR/bin/dist/*.dmg
+      - $TRAVIS_BUILD_DIR/bin/dist/minimal-podcasts-player-0.4.0.dmg
     skip_cleanup: true
     overwrite: true
-    tag_name: $TRAVIS_TAG
-    target_commitish: $TRAVIS_COMMIT
-    name: $TRAVIS_TAG
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = osx
-      all_branches: true
