@@ -49,6 +49,9 @@ deploy:
       - Minimal_Podcasts_Player-*-x86_64.AppImage
     skip_cleanup: true
     overwrite: true
+    tag_name: $TRAVIS_TAG
+    target_commitish: $TRAVIS_COMMIT
+    name: $TRAVIS_TAG
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = linux
@@ -58,6 +61,9 @@ deploy:
       - $TRAVIS_BUILD_DIR/bin/dist/*.exe
     skip_cleanup: true
     overwrite: true
+    tag_name: $TRAVIS_TAG
+    target_commitish: $TRAVIS_COMMIT
+    name: $TRAVIS_TAG
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = windows
@@ -67,6 +73,9 @@ deploy:
       - $TRAVIS_BUILD_DIR/bin/dist/*.dmg
     skip_cleanup: true
     overwrite: true
+    tag_name: $TRAVIS_TAG
+    target_commitish: $TRAVIS_COMMIT
+    name: $TRAVIS_TAG
     on:
       tags: true
       condition: $TRAVIS_OS_NAME = osx
