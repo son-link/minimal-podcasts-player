@@ -17,3 +17,4 @@ packages/archlinux/pkg/
 packages/archlinux/src/
 minimal-podcasts-player
 .qt_for_python/
+*.bck
