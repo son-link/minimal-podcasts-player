@@ -1,8 +1,8 @@
 language: shell
 branches:
   only:
+  - master
   - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
-  - continuous
 jobs:
   include:
     - name: AppImage
@@ -41,6 +41,7 @@ before_deploy:
   - git config --local user.name "Alfonso Saavedra 'Son Link'"
   - git config --local user.email "sonlink.dourden@gmail.com"
   #- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git push --delete origin continuous
   - export TRAVIS_TAG=continuous
 deploy:
   - provider: releases
