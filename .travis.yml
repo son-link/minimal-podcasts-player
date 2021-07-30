@@ -1,8 +1,8 @@
 language: shell
 branches:
   only:
-  - master
   - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+  - continuous
 jobs:
   include:
     - name: AppImage
