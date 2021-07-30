@@ -22,5 +22,7 @@
     <file>icons/breeze/actions/scalable/search.svg</file>
     <file>icons/breeze/actions/scalable/go-next-view.svg</file>
     <file>icons/breeze/actions/scalable/go-previous-view.svg</file>
+    <file>icons/breeze/actions/scalable/application-exit.svg</file>
+    <file>icons/breeze/actions/scalable/dashboard-show.svg</file>
   </qresource>
 </RCC>

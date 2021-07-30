@@ -18,11 +18,13 @@ from .utils import (
     isBSD
 )
 from .ui import custom_widgets as cw
+from .ui import confirmClose
 from . import db
 from . import conf
 from . import podcasts
 from . import download
 from time import sleep
+from sys import exit as sysExit
 import re
 
 _translate = QCoreApplication.translate
@@ -47,6 +49,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.episodesPerPage = 20
         self.currentPage = 0
         self.totalPages = 1
+        self.isMWShow = True
 
         self.player = Player(self)
 
@@ -122,6 +125,68 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
 
         self.prevDataBtn.clicked.connect(self.paginationPrev)
         self.nextDataBtn.clicked.connect(self.paginationNext)
+
+        # Tray icon
+        self.tray = QtWidgets.QSystemTrayIcon(
+            QIcon(QPixmap(':/img/icon.svg')),
+            self
+        )
+
+        # Tray menu
+        trayMenu = QtWidgets.QMenu()
+        self.trayPlay = QtWidgets.QAction(
+            QIcon.fromTheme('media-playback-start'),
+            _translate('MainWindow', 'Play/Pause'),
+            trayMenu
+        )
+        self.trayPlay.triggered.connect(self.player.playPause)
+        trayMenu.addAction(self.trayPlay)
+
+        prevAction = QtWidgets.QAction(
+            QIcon.fromTheme('media-skip-backward'),
+            _translate('MainWindow', 'Previous track'),
+            trayMenu
+        )
+        prevAction.triggered.connect(self.player.queueList.previous)
+        trayMenu.addAction(prevAction)
+
+        nextAction = QtWidgets.QAction(
+            QIcon.fromTheme('media-skip-forward'),
+            _translate('MainWindow', 'Next track'),
+            trayMenu
+        )
+        nextAction.triggered.connect(self.player.queueList.next)
+        trayMenu.addAction(nextAction)
+
+        stopAction = QtWidgets.QAction(
+            QIcon.fromTheme('media-playback-stop'),
+            _translate('MainWindow', 'Stop'),
+            trayMenu
+        )
+        stopAction.triggered.connect(self.player.stop)
+        trayMenu.addAction(stopAction)
+
+        showHideAction = QtWidgets.QAction(
+            QIcon.fromTheme('dashboard-show'),
+            _translate('MainWindow', 'Hide/Show'),
+            trayMenu
+        )
+        showHideAction.triggered.connect(self.hideShowMW)
+        trayMenu.addAction(showHideAction)
+
+        closeAction = QtWidgets.QAction(
+            QIcon.fromTheme('application-exit'),
+            _translate('MainWindow', 'Quit'),
+            trayMenu
+        )
+        closeAction.triggered.connect(sysExit)
+        trayMenu.addAction(closeAction)
+
+        self.tray.setContextMenu(trayMenu)
+        self.tray.setToolTip('Minimal Podcasts Player')
+
+        self.tray.setVisible(True)
+        self.tray.activated.connect(self.hideShowMW)
 
         thread = db.getPodcasts(self)
         thread.podcast.connect(self.addPCList)
@@ -482,6 +547,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         if self.currentPage < self.totalPages - 1:
             self.currentPage += 1
             self.getEpisodes()
+
+    def hideShowMW(self):
+        if self.isMWShow:
+            self.hide()
+            self.isMWShow = False
+        else:
+            self.show()
+            self.isMWShow = True
+
+    def closeEvent(self, event):
+        if 'disable_quit_dialog' in self.config and not self.config['disable_quit_dialog']:
+            event.ignore()
+            confirmClose.confirmDialog(self)
 
 
 def init():

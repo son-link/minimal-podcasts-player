@@ -22,8 +22,11 @@ def getConf():
                 value = parser.getboolean('mpp', 'update_on_init')
             if name == 'rename_download':
                 value = parser.getboolean('mpp', 'rename_download')
+            if name == 'disable_quit_dialog':
+                value = parser.getboolean('mpp', 'disable_quit_dialog')
             config[name] = value
-
+        if 'disable_quit_dialog' not in config:
+            config['disable_quit_dialog'] = False
     else:
         # If not create a new config file
         home = path.expanduser('~')
@@ -34,10 +37,12 @@ def getConf():
             'update_on_init': 1,
             'rename_download': 0,
             'download_folder': download_dir,
+            'disable_quit_dialog': 0
         }
         parser.set('mpp', 'update_on_init', '1')
         parser.set('mpp', 'rename_download', '0')
         parser.set('mpp', 'download_folder', download_dir)
+        parser.set('mpp', 'disable_quit_dialog', '0')
         with open(config_dir + 'mpp.ini', 'w') as configfile:
             parser.write(configfile)
 
@@ -53,8 +58,9 @@ class configDialog(QtWidgets.QDialog):
         self.ui = Ui_config.Ui_configDialog()
         # Run the .setupUi() method to show the GUI
         self.ui.setupUi(self)
-        self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
-
+        self.setWindowFlags(
+            Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowTitleHint
+        )
 
         self.ui.buttonBox.accepted.connect(self.saveConf)
         self.ui.selDownFolder.clicked.connect(self.selDownFolder)
@@ -71,6 +77,11 @@ class configDialog(QtWidgets.QDialog):
         else:
             self.ui.cbRenameDown.setChecked(False)
 
+        if 'disable_quit_dialog' in self.conf and self.conf['disable_quit_dialog']:
+            self.ui.cbDisableClose.setChecked(True)
+        else:
+            self.ui.cbDisableClose.setChecked(False)
+
         self.ui.downFolderEdit.setText(self.conf['download_folder'])
 
     def saveConf(self):
@@ -81,11 +92,17 @@ class configDialog(QtWidgets.QDialog):
         if self.ui.cbRenameDown.isChecked():
             rename_download = '1'
 
+        if self.ui.cbDisableClose.isChecked():
+            disable_quit_dialog = '1'
+        else:
+            disable_quit_dialog = '0'
+
         parser = ConfigParser()
         parser.add_section('mpp')
         parser.set('mpp', 'update_on_init', update_on_init)
         parser.set('mpp', 'rename_download', rename_download)
         parser.set('mpp', 'download_folder', self.ui.downFolderEdit.text())
+        parser.set('mpp', 'disable_quit_dialog', disable_quit_dialog)
         with open(config_dir + 'mpp.ini', 'w') as configfile:
             parser.write(configfile)
 

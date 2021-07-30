@@ -2,6 +2,7 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
 from PyQt5.QtCore import QUrl, QCoreApplication
 from PyQt5.QtGui import QIcon, QPixmap
 from .utils import ms_to_time
+from .ui import images_rc
 
 _translate = QCoreApplication.translate
 
@@ -123,6 +124,12 @@ class Player(QMediaPlayer):
             self.parent.infoEpisodeLabel.setText('')
             windowTitle = '{0} - {1}'.format(data['pc_title'], data['title'])
             self.parent.setWindowTitle(windowTitle)
+            self.parent.tray.setToolTip(windowTitle)
+            self.parent.tray.showMessage(
+                'Minimal Podcasts Player',
+                windowTitle,
+            )
+
             if self.queueList.mediaCount() > 1:
                 if pos < self.queueList.mediaCount() - 1:
                     self.parent.queueNextBtn.setEnabled(True)
@@ -174,9 +181,14 @@ class Player(QMediaPlayer):
                 self.playlistPosChanged()
         else:
             self.parent.setWindowTitle('Minimal Podcasts Player')
+            self.parent.tray.setToolTip('Minimal Podcasts Player')
             self.parent.infoEpisodeLabel.setText('')
-            self.parent.curPCLabel.setText(_translate("MainWindow", "Podcast"))
-            self.parent.curTrackName.setText(_translate("MainWindow", "Episode Title"))
+            self.parent.curPCLabel.setText(
+                _translate("MainWindow", "Podcast")
+            )
+            self.parent.curTrackName.setText(
+                _translate("MainWindow", "Episode Title")
+            )
             self.parent.queuePrevBtn.setEnabled(False)
             self.parent.queueNextBtn.setEnabled(False)
             self.parent.playBtn.setEnabled(False)
