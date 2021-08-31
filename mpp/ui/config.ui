@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>240</height>
+    <height>259</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,13 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="cbDisableClose">
+       <property name="text">
+        <string>Disable confirm close dialog</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
       <widget class="QLabel" name="label">
        <property name="locale">
@@ -45,15 +52,25 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="downFolderEdit"/>
+     </item>
+     <item row="3" column="2">
+      <widget class="QSpinBox" name="spinEpisPerPage">
+       <property name="minimum">
+        <number>20</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
       <widget class="QCheckBox" name="cbRenameDown">
        <property name="text">
         <string>Rename episodes after download</string>
        </property>
       </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="downFolderEdit"/>
      </item>
      <item row="0" column="0" colspan="2">
       <widget class="QCheckBox" name="cbUpdateInit">
@@ -62,7 +79,7 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -75,10 +92,10 @@
        </property>
       </spacer>
      </item>
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="cbDisableClose">
+     <item row="3" column="1">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Disable confirm close dialog</string>
+        <string>Episodes per page</string>
        </property>
       </widget>
      </item>

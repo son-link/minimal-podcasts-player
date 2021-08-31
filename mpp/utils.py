@@ -117,10 +117,14 @@ def isWindows():
 
 def downloadCover(url, filename):
     "Download the cover"
-    cover = path.join(getAppCacheDir(), filename)
-    opener = urllib.request.URLopener()
-    opener.addheader('User-Agent', 'Mozilla/5.0')
-    filename, headers = opener.retrieve(url, cover)
+    try:
+        cover = path.join(getAppCacheDir(), filename)
+        opener = urllib.request.URLopener()
+        opener.addheader('User-Agent', 'Mozilla/5.0')
+        filename, headers = opener.retrieve(url, cover)
+    except HTTPError:
+        print('Ocurrio un error al obtener ' + url)
+        return False
 
 
 def coverExist(filename):

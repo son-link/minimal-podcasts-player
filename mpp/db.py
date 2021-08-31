@@ -28,9 +28,18 @@ def dict_factory(cursor, row):
 
 
 class addPodcast(QThread):
+    """Thread for add podcast to the database"""
     podcast = pyqtSignal(int, int)
 
     def __init__(self, parent, url):
+        """ Init addPodcasts class and thread
+            Parameters
+            ----------
+            parent : object
+                The MainWindow object (default is None)
+            url : string
+                Url to the podcasts feed
+        """
         super(addPodcast, self).__init__(parent)
         self.url = url
 
@@ -50,6 +59,7 @@ class addPodcast(QThread):
             cover_name = data['cover_url'].split('/')[-1].split('?')[0]
             downloadCover(data['cover_url'], cover_name)
 
+            # Insert podcasts data in the podcasts table
             insert = cursor.execute(
                 """
                 INSERT INTO podcasts (
@@ -81,7 +91,9 @@ class addPodcast(QThread):
             if not insert:
                 self.podcast.emit(False)
 
-            lastid = cursor.lastrowid
+            lastid = cursor.lastrowid  # Obtain the last insert id
+
+            # Insert the podcasts episodes
             episodes = []
             sql = """
                 INSERT INTO episodes (
@@ -134,7 +146,7 @@ class addPodcast(QThread):
             cursor.executemany(sql, episodes)
             con.commit()
 
-            # Insert the last date in the podcast data for insert new episodes later
+            # Insert the last date on podcast for insert new episodes later
             cursor.execute(
                 'UPDATE podcasts SET lastUpdate=%i WHERE idPodcast=%i' % (
                     episodes[0][4],
@@ -151,13 +163,27 @@ class addPodcast(QThread):
 
 
 class getEpisodes(QThread):
+    """ Obtain the podcast's episodes"""
     episodes = pyqtSignal(dict)
 
-    def __init__(self, parent, idPodcast, offset=1):
+    def __init__(self, parent, idPodcast, offset=1, limit=20):
+        """ Init getEpisodes thread
+            Parameters
+            ----------
+            parent : object
+                The MainWindow object
+            idPodcast : integer
+                The podcasts identifier
+            offset : integer, optional
+                From which position of the result to start (default is 1)
+            limit :  integer, optional
+                Number of results to display per page.
+                This limit is obtained from the configuration (default is 20)
+        """
         super(getEpisodes, self).__init__(parent)
         self.idPodcast = idPodcast
         self.offset = offset
-        self.limit = 20
+        self.limit = limit
 
     def run(self):
         con = sqlite3.connect(db_dir + "mpp.db")
@@ -193,9 +219,16 @@ class getEpisodes(QThread):
 
 
 class getPodcasts(QThread):
+    """Get all podcasts in the database"""
     podcast = pyqtSignal(dict)
 
     def __init__(self, parent):
+        """ Init getPodcasts thread
+            Parameters
+            ----------
+            parent : object
+                The MainWindow object
+        """
         super(getPodcasts, self).__init__(parent)
 
     def run(self):
@@ -224,6 +257,13 @@ class getPodcasts(QThread):
 
 
 def getPodcast(idPodcast):
+    """ Return the podcast data
+        Args:
+            idPodcast : integer
+                The podcasts identifier
+        Returns:
+            A dictionary with teh podcast's info
+        """
     con = sqlite3.connect(db_dir + "mpp.db")
     con.row_factory = dict_factory
     cursor = con.cursor()
@@ -241,6 +281,10 @@ def getPodcast(idPodcast):
 
 
 class updateEpisodes(QThread):
+    """
+    This thread checks for new episodes since the last time they were retrieved,
+    and if so, adds them and updates the date with the current one.
+    """
     newEpisodes = pyqtSignal(object)
     end = pyqtSignal(bool)
 
@@ -359,7 +403,8 @@ class updateEpisodes(QThread):
                     if len(episodes) > 0:
                         cursor.executemany(sql, episodes)
                         con.commit()
-                        # Insert the last date in the podcast data for insert new episodes later
+                        # Update the last date in podcast data.
+                        # It's necessary for check new episodes.
                         cursor.execute("""
                             UPDATE podcasts
                             SET lastUpdate=%i, coverUrl='%s'
@@ -371,7 +416,8 @@ class updateEpisodes(QThread):
                             )
                         con.commit()
 
-                        if self.idPodcast and self.returnNew and (self.idPodcast == p['idPodcast']):
+                        if (self.idPodcast and self.returnNew and
+                                (self.idPodcast == p['idPodcast'])):
                             dataReturn.reverse()
                             self.newEpisodes.emit(dataReturn)
                 except urllib.error.HTTPError:
@@ -387,6 +433,13 @@ class updateEpisodes(QThread):
 
 
 def getEpisode(idEpisode):
+    """ Return a episode data
+        Args:
+            idEpisode : integer
+                The episode identifier
+        Returns:
+            A dictionary with the episode's info
+    """
     con = sqlite3.connect(db_dir + "mpp.db")
     con.row_factory = dict_factory
     cursor = con.cursor()
@@ -397,12 +450,14 @@ def getEpisode(idEpisode):
         cursor.execute("""SELECT *
                 FROM episodes
                 WHERE idEpisode = ?""", (idEpisode,))
-        podcast = cursor.fetchone()
+        episode = cursor.fetchone()
         con.close()
-        return podcast
+        return episode
 
 
 def createDB():
+    """Create the database"""
+
     con = sqlite3.connect(db_dir + "mpp.db")
     cursor = con.cursor()
 
@@ -432,7 +487,9 @@ def updateDB():
         # First check if one of the new columns exists
 
         cursor.execute("""
-            SELECT COUNT(*) AS CNTREC FROM pragma_table_info('podcasts') WHERE name='coverUrl'
+            SELECT COUNT(*) AS CNTREC
+            FROM pragma_table_info('podcasts')
+            WHERE name='coverUrl'
         """)
 
         check = cursor.fetchone()
@@ -441,7 +498,7 @@ def updateDB():
             delete_file.unlink()
             con.close()
             return
-        
+
         # Rename the tables for after copy the data
         con.execute('ALTER TABLE podcasts RENAME TO podcasts_bck')
         con.commit()
@@ -455,7 +512,9 @@ def updateDB():
             cursor.executescript(sql)
 
             # Get the columns name to copy the data
-            cursor.execute("SELECT name FROM pragma_table_info('podcasts_bck')")
+            cursor.execute(
+                "SELECT name FROM pragma_table_info('podcasts_bck')"
+            )
             insert = 'INSERT INTO podcasts ('
             columns = cursor.fetchall()
             for i in range(len(columns)):
@@ -469,7 +528,9 @@ def updateDB():
             con.commit()
 
             # The same for the episodes
-            cursor.execute("SELECT name FROM pragma_table_info('episodes_bck')")
+            cursor.execute(
+                "SELECT name FROM pragma_table_info('episodes_bck')"
+            )
             insert = 'INSERT INTO episodes ('
             columns = cursor.fetchall()
             for i in range(len(columns)):
@@ -495,7 +556,7 @@ def updateDB():
                     .format(data['cover_url'], r['idPodcast'])
                 )
                 con.commit()
-                
+
             # Finally remove thec _bck tables and close db
             cursor.execute('DROP TABLE podcasts_bck')
             cursor.execute('DROP TABLE episodes_bck')
@@ -504,6 +565,14 @@ def updateDB():
 
 
 def removePodcast(idPodcast):
+    """ Remove the podcast indicated
+        Args:
+            idPodcast : integer
+                The podcasts identifier
+        Returns:
+            True if he podcasts is remove correctly
+            or False in case of error
+    """
     con = sqlite3.connect(db_dir + "mpp.db")
     cursor = con.cursor()
     if not cursor:
@@ -523,6 +592,17 @@ def removePodcast(idPodcast):
 
 
 def addDownLocalfile(idEpisode, localfile):
+    """ Updates the X field of the Y table with the path
+        to the episode that has been downloaded.
+        Args:
+            idPodcast : integer
+                The podcasts identifier
+            localfile:
+                Path to the downloaded file
+        Returns:
+            True if the fuiled is updated correctly
+            or False in case of error
+    """
     con = sqlite3.connect(db_dir + "mpp.db")
     cursor = con.cursor()
     if not cursor:
@@ -530,7 +610,10 @@ def addDownLocalfile(idEpisode, localfile):
         return False
 
     try:
-        cursor.execute('UPDATE episodes SET localfile=? WHERE idEpisode=?', (localfile, idEpisode))
+        cursor.execute(
+            'UPDATE episodes SET localfile=? WHERE idEpisode=?',
+            (localfile, idEpisode)
+        )
         con.commit()
         con.close()
         return True
@@ -540,7 +623,14 @@ def addDownLocalfile(idEpisode, localfile):
 
 
 def getTotalEpisodes(idPodcast):
-    """Return the total of episodes"""
+    """ Return the total of podcast's episodes
+        Args:
+            idPodcast : integer
+                The podcasts identifier
+        Returns:
+            Total of episodes or False in case of error
+    """
+
     con = sqlite3.connect(db_dir + "mpp.db")
     con.row_factory = dict_factory
     cursor = con.cursor()

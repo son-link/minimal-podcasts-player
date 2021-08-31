@@ -19,6 +19,7 @@ from .utils import (
 )
 from .ui import custom_widgets as cw
 from .ui import confirmClose
+from .ui import Ui_about
 from . import db
 from . import conf
 from . import podcasts
@@ -26,6 +27,7 @@ from . import download
 from time import sleep
 from sys import exit as sysExit
 import re
+import os
 
 _translate = QCoreApplication.translate
 
@@ -38,15 +40,18 @@ if not path.exists(db_file):
     db.createDB()
     sleep(2)
 else:
+    # If exists check if necessary update the database
     db.updateDB()
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
+    """
+    The main window
+    """
     def __init__(self, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
-        self.config = conf.getConf()
-        self.episodesPerPage = 20
+        self.config = conf.getConf()  # Get the config
         self.currentPage = 0
         self.totalPages = 1
         self.isMWShow = True
@@ -75,6 +80,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         )
         self.actionConfig.triggered.connect(self.showConfDialog)
         self.menu.addAction(self.actionConfig)
+
+        self.actionAbout = QtWidgets.QAction(
+            _translate('MainWindow', 'About'),
+            self
+        )
+        self.actionAbout.triggered.connect(self.showAboutDialog)
+        self.menu.addAction(self.actionAbout)
 
         self.optionsBtn.setMenu(self.menu)
 
@@ -111,6 +123,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.podcastSelected = 0
         self.prependEpisodes = False
 
+        # Connect events
         self.timeSlider.valueChanged.connect(self.player.setPosition)
         self.volumeSlider.valueChanged.connect(self.player.setVolume)
         self.podcastsList.clicked.connect(self.getEpisodes)
@@ -122,6 +135,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.queueList.doubleClicked.connect(self.changeEpisode)
         self.queuePrevBtn.clicked.connect(self.player.queueList.previous)
         self.queueNextBtn.clicked.connect(self.player.queueList.next)
+
+        # Multimedia keys
+        self.playBtn.setShortcut(Qt.Key_MediaPlay)
+        self.stopBtn.setShortcut(Qt.Key_MediaStop)
+        self.queuePrevBtn.setShortcut(Qt.Key_MediaPrevious)
+        self.queueNextBtn.setShortcut(Qt.Key_MediaNext)
 
         self.prevDataBtn.clicked.connect(self.paginationPrev)
         self.nextDataBtn.clicked.connect(self.paginationNext)
@@ -197,6 +216,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.dw = download.Downloads()
 
     def playPodcast(self, pressed):
+        """ Starts playing a episode when the play button
+            in the episode list is clicked.
+            Args:
+                pressed : object
+                    The button pressed
+            Returns:
+                True if he podcasts is remove correctly
+                or False in case of error
+        """
+
         source = self.sender()
         pos = source.value
 
@@ -207,6 +236,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.player.startPlay()
 
     def addPCList(self, data):
+        """ This is a callback function called when
+            add a podcast to the list
+            Args:
+                data : dict
+                    The podcast's data
+            Returns:
+                True if he podcasts is remove correctly
+                or False in case of error
+        """
+
         item = cw.podcastWidget(self, data)
         myItem = QtWidgets.QListWidgetItem()
         myItem.value = data['idPodcast']
@@ -218,10 +257,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         myItem.setSizeHint(minimumSizeHint)
 
     def addPodcast(self):
+        """Show the Add podcast dialog"""
         self.addDialog = podcasts.addDialog(self, self.addNewToList)
         self.addDialog.exec_()
 
     def addNewToList(self, idPodcast, length):
+        """ This is a callback function called when
+            add a new episodes to the list
+            and one is selected
+            Args:
+                idPodcast : int
+                    The podcast's identifier
+                length:
+                    How many of episodes are in the database
+        """
         if (idPodcast and idPodcast != 0):
             self.addDialog.close()
             data = db.getPodcast(idPodcast)
@@ -237,6 +286,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.statusBar().showMessage('')
 
     def reloadPCList(self, reload):
+        """ Reload the podcasts list
+            Args:
+                reload : bool
+                    True for reload
+        """
         if reload:
             self.podcastsList.clear()
             thread = db.getPodcasts(self)
@@ -244,6 +298,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             thread.start()
 
     def add2queue(self, pressed, pos=None):
+        """ Add episode to the playlist queue
+            Args:
+                pressed : object
+                    The button pressed
+                pos : int, optional
+                    The episode position on the list. This parameter is passed
+                    when using the submenu of the list.
+            Returns:
+                True if he podcasts is remove correctly
+                or False in case of error
+        """
         if not pos and pos != 0:
             source = self.sender()
             pos = source.value
@@ -265,6 +330,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.queueNextBtn.setEnabled(True)
 
     def getEpisodes(self, item=None):
+        """ Get and show the selected podcast's episodes
+            Args:
+                item : object, optional
+                    The podcast selected
+        """
         self.episodesCount = 0
         self.lastEpisodePos = 0
         self.episodesData = []
@@ -287,11 +357,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         if item:
             totalEpisodes = db.getTotalEpisodes(idPodcast)
             self.currentPage = 0
-            self.totalPages = ceil(totalEpisodes / self.episodesPerPage)
+            self.totalPages = ceil(
+                totalEpisodes / self.config['episodes_per_page']
+            )
 
-        offset = (self.currentPage * self.episodesPerPage) + 1
+        offset = (self.currentPage * self.config['episodes_per_page']) + 1
         self.podcastDesc.setText(description)
-        thread = db.getEpisodes(self, idPodcast, offset)
+        thread = db.getEpisodes(
+            self,
+            idPodcast,
+            offset,
+            self.config['episodes_per_page']
+        )
         thread.episodes.connect(self.insertEpisode)
         thread.start()
         self.podcastSelected = idPodcast
@@ -459,6 +536,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         dialog = conf.configDialog(self)
         dialog.exec()
         self.config = conf.getConf()
+        self.reloadPCList(True)
 
     def podcastsMenu(self, event):
         menu = QtWidgets.QMenu(self.podcastsList)
@@ -557,9 +635,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.isMWShow = True
 
     def closeEvent(self, event):
-        if 'disable_quit_dialog' in self.config and not self.config['disable_quit_dialog']:
+        if ('disable_quit_dialog' in self.config and
+                not self.config['disable_quit_dialog']):
             event.ignore()
             confirmClose.confirmDialog(self)
+
+    def showAboutDialog(self):
+        dialog = aboutDialog(self)
+        dialog.exec()
+
+
+class aboutDialog(QtWidgets.QDialog):
+    """Show About dialog"""
+
+    def __init__(self, parent=None):
+        """ Init the class aboutDialog
+            Parameters
+            ----------
+            parent : object, optional
+                The MainWindow object (default is None)
+        """
+        super().__init__(parent)
+        self.parent = parent
+        self.ui = Ui_about.Ui_aboutDialog()
+        self.ui.setupUi(self)
+
+        curdir = os.path.dirname(os.path.abspath(__file__))
+        license = os.path.join(curdir, 'LICENSE')
+        with open(license) as f:
+            self.ui.licenseText.setPlainText(f.read())
 
 
 def init():

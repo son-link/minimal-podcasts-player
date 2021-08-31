@@ -12,9 +12,8 @@ cache_dir = getAppCacheDir()
 
 
 class podcastWidget(QtWidgets.QWidget):
-
     """
-        The widget use in the podcasts list
+        The custom widget use in the podcasts list
     """
     def __init__(self, parent=None, data=None):
         super(podcastWidget, self).__init__(parent)
@@ -54,7 +53,6 @@ class podcastWidget(QtWidgets.QWidget):
         self.infoWidget = QtWidgets.QWidget()
 
         layout2 = QtWidgets.QVBoxLayout()
-        # layout2.setSpacing(0)
         self.infoWidget.setLayout(layout2)
 
         title = QtWidgets.QLabel(data['title'])
@@ -76,6 +74,9 @@ class podcastWidget(QtWidgets.QWidget):
 
 
 class queueWidget(QtWidgets.QWidget):
+    """
+    The custom widget for the queue list.
+    """
     def __init__(self, data=None):
         super(queueWidget, self).__init__()
         self.setFixedHeight(64)

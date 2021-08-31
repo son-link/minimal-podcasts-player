@@ -58,3 +58,5 @@
 * Added a system tray icon, their menu and show/hide the main window.
 * Now when closing the main window, a dialog will be displayed to confirm the closure, minimice it to the system tray icon or cancel the closure. Within the options you can disable this dialog.
 * Add two new icons and some translations.
+* Several modifications to make the code more readable and several comments added and modified.
+* Add About dialog.

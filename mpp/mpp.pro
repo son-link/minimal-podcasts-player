@@ -6,4 +6,5 @@ SOURCES += ui/Ui_gui.py
 SOURCES += ui/Ui_config.py
 SOURCES += ui/Ui_add_dialog.py
 SOURCES += ui/confirmClose.py
+SOURCES += ui/Ui_about.py
 TRANSLATIONS += locales/es.ts

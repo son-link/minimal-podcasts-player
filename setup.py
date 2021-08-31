@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="minimal-podcasts-player",
-    version="0.4.0",
+    version="0.4.1",
     description="Subscribe, listen and (in the future) download your favorite podcasts, quickly and easily.",
     author="Alfonso Saavedra 'Son Link'",
     author_email='sonlink.dourden@gmail.com',
@@ -11,7 +11,8 @@ setup(
     scripts=['bin/minimal-podcasts-player'],
     packages=['mpp'],
     package_dir={'mpp': 'mpp'},
-    package_data={'mpp': ['*', 'locales/*.qm', 'ui/*.py']},
+    package_data={'mpp': ['*', 'locales/*.qm', 'ui/*.py', 'LICENSE']},
+    include_package_data=True,
     exclude_package_data={
         'mpp': [
             'icon.svg',
@@ -25,16 +26,16 @@ setup(
             'mpp.ini',
             'mpp.pro',
             'search.py'
-        ]
+        ],
     },
-    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.3.1.tar.gz',
+    download_url='https://github.com/son-link/minimal-podcasts-player/archive/0.4.1.tar.gz',
     keywords=['podcasts', 'audio', 'stream'],
     install_requires=[
         'pyqt5',
         'podcastparser',
     ],
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: X11 Applications :: Qt',
         'Topic :: Multimedia :: Sound/Audio',
         'Topic :: Multimedia :: Sound/Audio :: Players',

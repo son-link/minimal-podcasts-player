@@ -49,62 +49,62 @@
         <translation>Descargas</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="58"/>
+        <location filename="../__init__.py" line="63"/>
         <source>Add podcast</source>
         <translation>Añadir podcast</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="65"/>
+        <location filename="../__init__.py" line="70"/>
         <source>Update</source>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="72"/>
+        <location filename="../__init__.py" line="77"/>
         <source>Configure</source>
         <translation>Configurar</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="86"/>
+        <location filename="../__init__.py" line="98"/>
         <source>Episode</source>
         <translation>Episodio</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="86"/>
+        <location filename="../__init__.py" line="98"/>
         <source>Published</source>
         <translation>Publicado</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="86"/>
+        <location filename="../__init__.py" line="98"/>
         <source>Duration</source>
         <translation>Duración</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="388"/>
+        <location filename="../__init__.py" line="465"/>
         <source>Add to queue</source>
         <translation>Añadir a la cola</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="416"/>
+        <location filename="../__init__.py" line="493"/>
         <source>Searching new episodes....</source>
         <translation>Buscando nuevos episodios....</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="436"/>
+        <location filename="../__init__.py" line="513"/>
         <source>Remove from queue</source>
         <translation>Eliminar de la cola</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="466"/>
+        <location filename="../__init__.py" line="544"/>
         <source>Unsubscribe</source>
         <translation>Desuscribir</translation>
     </message>
     <message>
-        <location filename="../conf.py" line="95"/>
+        <location filename="../conf.py" line="126"/>
         <source>Select downloads folder</source>
         <translation>Seleccionar carpeta de descargas</translation>
     </message>
     <message>
-        <location filename="../podcasts.py" line="46"/>
+        <location filename="../podcasts.py" line="76"/>
         <source>Adding podcast....</source>
         <translation>Añadiendo podcast....</translation>
     </message>
@@ -114,44 +114,87 @@
         <translation>Página 1 de 1</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="298"/>
+        <location filename="../__init__.py" line="375"/>
         <source>Page {0} of {1}</source>
         <translation>Página {0} de {1}</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="137"/>
+        <location filename="../__init__.py" line="156"/>
         <source>Play/Pause</source>
         <translation>Reproducir/Pausar</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="145"/>
+        <location filename="../__init__.py" line="164"/>
         <source>Previous track</source>
         <translation>Pista anterior</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="153"/>
+        <location filename="../__init__.py" line="172"/>
         <source>Next track</source>
         <translation>Siguiente pista</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="161"/>
+        <location filename="../__init__.py" line="180"/>
         <source>Stop</source>
         <translation>Parar</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="169"/>
+        <location filename="../__init__.py" line="188"/>
         <source>Hide/Show</source>
         <translation>Ocultar/Mostrar</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="397"/>
+        <location filename="../__init__.py" line="474"/>
         <source>Add to download queue</source>
         <translation>Añadir a la cola de descargas</translation>
     </message>
     <message>
-        <location filename="../__init__.py" line="177"/>
+        <location filename="../__init__.py" line="196"/>
         <source>Quit</source>
         <translation>Cerrar</translation>
+    </message>
+    <message>
+        <location filename="../__init__.py" line="84"/>
+        <source>About</source>
+        <translation>Sobre</translation>
+    </message>
+</context>
+<context>
+    <name>aboutDialog</name>
+    <message>
+        <location filename="../ui/Ui_about.py" line="93"/>
+        <source>About</source>
+        <translation>Sobre</translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_about.py" line="92"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;Minimal Podcasts Player&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Subscribe, listen and download your favorite podcasts, quickly and easily. &lt;/p&gt;&lt;p&gt;(c) 2020-2021 Alfonso Saavedra &amp;quot;Son Link&amp;quot;&lt;/p&gt;&lt;p&gt;Under the GPL version 3 license or newer.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/son-link/minimal-podcasts-player/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#009dff;&quot;&gt;Source code&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;Minimal Podcasts Player&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Suscribete, escucha y descarga tus podcasts favoritos,rápida y fácilmente. &lt;/p&gt;&lt;p&gt;(c) 2020-2021 Alfonso Saavedra &amp;quot;Son Link&amp;quot;&lt;/p&gt;&lt;p&gt;Bajo licencia GPL version 3 o superior.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/son-link/minimal-podcasts-player/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#009dff;&quot;&gt;Código fuente&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_about.py" line="94"/>
+        <source>Licence</source>
+        <translation>Licencia</translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_about.py" line="95"/>
+        <source>Engels Tercero from the Telegram group SystemInside, for helping me package the
+Mac OS X application.
+
+David Linares, member of SystemInside&apos;s Telegram group for report the bug and
+provide several ideas.
+
+</source>
+        <translation>Engels Tercero del grupo de Telegram de SystemInside, por ayudarme a empaquetar la aplicación para Mac OS X.
+
+David Linares, miembro del grupo de Telegram de SystemInside por reportarme varios fallos y darme algunas ideas.
+
+</translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_about.py" line="102"/>
+        <source>Thanks to</source>
+        <translation>Agradecimientos a</translation>
     </message>
 </context>
 <context>
@@ -182,12 +225,12 @@
         <translation>Buscar</translation>
     </message>
     <message>
-        <location filename="../podcasts.py" line="54"/>
+        <location filename="../podcasts.py" line="85"/>
         <source>URL not valid</source>
         <translation>URL no válida</translation>
     </message>
     <message>
-        <location filename="../podcasts.py" line="61"/>
+        <location filename="../podcasts.py" line="92"/>
         <source>URL not valid or not contain a RSS Feed</source>
         <translation>URl no válida o no contiene un Feed RSS</translation>
     </message>
@@ -195,34 +238,39 @@
 <context>
     <name>configDialog</name>
     <message>
-        <location filename="../ui/Ui_config.py" line="61"/>
+        <location filename="../ui/Ui_config.py" line="69"/>
         <source>Configure</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_config.py" line="65"/>
+        <location filename="../ui/Ui_config.py" line="74"/>
         <source>Update at init.</source>
         <translation>Actualizar al iniciar.</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_config.py" line="62"/>
+        <location filename="../ui/Ui_config.py" line="71"/>
         <source>Download folder:</source>
         <translation>Carpeta de descargas:</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_config.py" line="63"/>
+        <location filename="../ui/Ui_config.py" line="72"/>
         <source>Select</source>
         <translation>Seleccionar</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_config.py" line="64"/>
+        <location filename="../ui/Ui_config.py" line="73"/>
         <source>Rename episodes after download</source>
         <translation>Renombrar episodios después de descargar</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_config.py" line="66"/>
+        <location filename="../ui/Ui_config.py" line="70"/>
         <source>Disable confirm close dialog</source>
         <translation>Desabilitar dialogo de confirmación de cierre</translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_config.py" line="75"/>
+        <source>Episodes per page</source>
+        <translation>Episodios por página</translation>
     </message>
 </context>
 <context>
