@@ -573,7 +573,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
                     self.podcastDesc.setText(
                         _translate('MainWindow', 'Description')
                     )
-                    coverImage = QPixmap(':/img/no-cover.svg')
+                    coverImage = QPixmap(':/img/icon.svg')
                     self.podcastCover.setPixmap(
                         coverImage.scaled(128, 128, Qt.KeepAspectRatio)
                     )
