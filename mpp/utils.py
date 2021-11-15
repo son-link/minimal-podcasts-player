@@ -135,3 +135,32 @@ def coverExist(filename):
         return False
 
     return True
+
+
+def verifyFeed(url):
+    """
+    Check if the feed is a valid feed before add (for example, the feed of a blog)
+    Args:
+        url : integer
+            The podcasts feed url
+    Returns:
+        True if valid
+    """
+
+    data = parseFeed(url)
+    if not data:
+        return False
+
+    if ('cover_url' not in data):
+        return False
+
+    # Yet the first episode
+    episode = data['episodes'][0]
+
+    if 'enclosures' in episode and len(episode['enclosures']) == 0:
+        return False
+    else:
+        if episode['enclosures'][0]['mime_type'] != 'audio/mpeg':
+            return False
+
+    return data

@@ -5,7 +5,8 @@ from .utils import (
     getAppDataDir,
     getAppCacheDir,
     downloadCover,
-    coverExist
+    coverExist,
+    verifyFeed
 )
 import time
 import sqlite3
@@ -31,7 +32,7 @@ class addPodcast(QThread):
     """Thread for add podcast to the database"""
     podcast = pyqtSignal(int, int)
 
-    def __init__(self, parent, url):
+    def __init__(self, parent, url=None, data=None):
         """ Init addPodcasts class and thread
             Parameters
             ----------
@@ -44,118 +45,12 @@ class addPodcast(QThread):
         self.url = url
 
     def run(self):
-        con = sqlite3.connect(db_dir + "mpp.db")
-        con.row_factory = dict_factory
-        cursor = con.cursor()
-
-        if not cursor:
-            print("Database Error", "Unable To Connect To The Database!")
-            self.stop()
+        if not verifyFeed(self.url):
+            self.podcast.emit(0, 0)
         else:
             data = parseFeed(self.url)
-            # Firts insert the podcasts info
-
-            # Download the cover
-            cover_name = data['cover_url'].split('/')[-1].split('?')[0]
-            downloadCover(data['cover_url'], cover_name)
-
-            # Insert podcasts data in the podcasts table
-            insert = cursor.execute(
-                """
-                INSERT INTO podcasts (
-                    title,
-                    url,
-                    cover,
-                    description,
-                    pageUrl,
-                    coverUrl
-                )
-                VALUES (
-                    '{0}',
-                    '{1}',
-                    '{2}',
-                    '{3}',
-                    '{4}',
-                    '{5}')
-                """.format(
-                    data['title'],
-                    self.url,
-                    cover_name,
-                    data['description'],
-                    data['link'],
-                    data['cover_url']
-                )
-            )
-            con.commit()
-
-            if not insert:
-                self.podcast.emit(False)
-
-            lastid = cursor.lastrowid  # Obtain the last insert id
-
-            # Insert the podcasts episodes
-            episodes = []
-            sql = """
-                INSERT INTO episodes (
-                    idPodcast,
-                    title,
-                    description,
-                    url,
-                    date,
-                    totalTime
-                ) VALUES (
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?
-                )
-            """
-
-            for e in data['episodes']:
-
-                description = ''
-
-                if 'description_html' in e:
-                    description = e['description_html']
-                else:
-                    description = e['description']
-                    description = re.sub(
-                        r'(https?:\/\/[^\s]+)', r'<a href="\g<0>">\g<0></a>',
-                        description
-                    )
-
-                episodeUrl = ''
-                if (e['enclosures']):
-                    episodeUrl = e['enclosures'][0]['url']
-                else:
-                    episodeUrl = e['link']
-
-                episode = (
-                    lastid,
-                    e['title'],
-                    description,
-                    episodeUrl,
-                    e['published'],
-                    e['total_time']
-                )
-
-                episodes.append(episode)
-
-            cursor.executemany(sql, episodes)
-            con.commit()
-
-            # Insert the last date on podcast for insert new episodes later
-            cursor.execute(
-                'UPDATE podcasts SET lastUpdate=%i WHERE idPodcast=%i' % (
-                    episodes[0][4],
-                    lastid
-                )
-            )
-            con.commit()
-            con.close()
-            self.podcast.emit(lastid, len(episodes))
+            lastid, episodes = insertPodcast(self.url, data)
+            self.podcast.emit(lastid, episodes)
 
     def stop(self):
         self.quit()
@@ -648,3 +543,117 @@ def getTotalEpisodes(idPodcast):
         data = cursor.fetchone()
         con.close()
         return data['total']
+
+
+def insertPodcast(url, data):
+    con = sqlite3.connect(db_dir + "mpp.db")
+    con.row_factory = dict_factory
+    cursor = con.cursor()
+
+    if not cursor:
+        print("Database Error", "Unable To Connect To The Database!")
+        return (False, 0)
+    else:
+        # Firts insert the podcasts info
+
+        # Download the cover
+        cover_name = data['cover_url'].split('/')[-1].split('?')[0]
+        downloadCover(data['cover_url'], cover_name)
+
+        # Insert podcasts data in the podcasts table
+        insert = cursor.execute(
+            """
+                INSERT INTO podcasts (
+                title,
+                url,
+                cover,
+                description,
+                pageUrl,
+                coverUrl
+            )
+            VALUES (
+                '{0}',
+                '{1}',
+                '{2}',
+                '{3}',
+                '{4}',
+                '{5}')
+            """.format(
+                data['title'],
+                url,
+                cover_name,
+                data['description'],
+                data['link'],
+                data['cover_url']
+            )
+        )
+        con.commit()
+
+        if not insert:
+            return (False, 0)
+
+        lastid = cursor.lastrowid  # Obtain the last insert id
+
+        # Insert the podcasts episodes
+        episodes = []
+        sql = """
+            INSERT INTO episodes (
+                idPodcast,
+                title,
+                description,
+                url,
+                date,
+                totalTime
+            ) VALUES (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
+            )
+        """
+
+        for e in data['episodes']:
+
+            description = ''
+
+            if 'description_html' in e:
+                description = e['description_html']
+            else:
+                description = e['description']
+                description = re.sub(
+                    r'(https?:\/\/[^\s]+)', r'<a href="\g<0>">\g<0></a>',
+                    description
+                )
+
+            episodeUrl = ''
+            if (e['enclosures']):
+                episodeUrl = e['enclosures'][0]['url']
+            else:
+                episodeUrl = e['link']
+
+            episode = (
+                lastid,
+                e['title'],
+                description,
+                episodeUrl,
+                e['published'],
+                e['total_time']
+            )
+
+            episodes.append(episode)
+
+        cursor.executemany(sql, episodes)
+        con.commit()
+
+        # Insert the last date on podcast for insert new episodes later
+        cursor.execute(
+            'UPDATE podcasts SET lastUpdate=%i WHERE idPodcast=%i' % (
+                episodes[0][4],
+                lastid
+            )
+        )
+        con.commit()
+        con.close()
+        return (lastid, len(episodes))

@@ -33,6 +33,7 @@ setup(
     install_requires=[
         'pyqt5',
         'podcastparser',
+        'opyml'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',

@@ -9,11 +9,12 @@ from PyQt5.QtCore import (
 from PyQt5.QtGui import QFont
 from urllib.request import urlopen
 from .ui import Ui_add_dialog
-from .utils import parseFeed
+from .utils import parseFeed, verifyFeed
 from . import db
 import re
 import urllib.parse
 import json
+
 _translate = QCoreApplication.translate
 
 
@@ -72,6 +73,13 @@ class addDialog(QtWidgets.QDialog):
             url = 'https://www.ivoox.com/{0}_fg_{1}_filtro_1.xml'.format(
                 ivoox[1], ivoox[2]
             )
+
+        if not verifyFeed(url):
+            error_dialog = QtWidgets.QErrorMessage(self)
+            error_dialog.showMessage(
+                _translate('addDialog', 'Feed not valid')
+            )
+            return False
 
         self.parent.statusBar().showMessage(
             _translate('MainWindow', 'Adding podcast....')

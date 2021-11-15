@@ -24,8 +24,10 @@ from . import db
 from . import conf
 from . import podcasts
 from . import download
+from . import opml
 from time import sleep
 from sys import exit as sysExit
+
 import re
 import os
 
@@ -80,6 +82,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         )
         self.actionConfig.triggered.connect(self.showConfDialog)
         self.menu.addAction(self.actionConfig)
+        
+        self.actionImport = QtWidgets.QAction(
+            _translate('MainWindow', 'Import suscriptions'),
+            self
+        )
+        self.actionImport.triggered.connect(self.import_opml)
+        self.menu.addAction(self.actionImport)
 
         self.actionAbout = QtWidgets.QAction(
             _translate('MainWindow', 'About'),
@@ -643,6 +652,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
     def showAboutDialog(self):
         dialog = aboutDialog(self)
         dialog.exec()
+
+    def import_opml(self):
+        opmlfile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            _translate('MainWindow', 'Select OPML file'),
+            '',
+            _translate('MainWindow', 'OPML (*.opml)'),
+        )
+
+        if opmlfile:
+            import_thread = opml.import_subs(self, opmlfile)
+            import_thread.end.connect(self.reloadPCList)
+            import_thread.start()
 
 
 class aboutDialog(QtWidgets.QDialog):
