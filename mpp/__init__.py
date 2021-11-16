@@ -27,6 +27,7 @@ from . import download
 from . import opml
 from time import sleep
 from sys import exit as sysExit
+from pynput import keyboard
 
 import re
 import os
@@ -153,10 +154,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.queueNextBtn.clicked.connect(self.player.queueList.next)
 
         # Multimedia keys
-        self.playBtn.setShortcut(Qt.Key_MediaPlay)
+        '''self.playBtn.setShortcut(Qt.Key_MediaPlay)
         self.stopBtn.setShortcut(Qt.Key_MediaStop)
         self.queuePrevBtn.setShortcut(Qt.Key_MediaPrevious)
-        self.queueNextBtn.setShortcut(Qt.Key_MediaNext)
+        self.queueNextBtn.setShortcut(Qt.Key_MediaNext)'''
+
+        listener = keyboard.Listener(on_press=self.on_press)
+        listener.start()
 
         self.prevDataBtn.clicked.connect(self.paginationPrev)
         self.nextDataBtn.clicked.connect(self.paginationNext)
@@ -685,6 +689,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             export_thread = opml.export_subs(self, opmlfile)
             #import_thread.end.connect(self.reloadPCList)
             export_thread.start()
+            
+    def on_press(self, key):
+        if key == keyboard.Key.media_play_pause:
+            self.player.playPause()
+        elif key == keyboard.Key.media_stop:
+            self.player.stop()
+        elif key == keyboard.Key.media_previous:
+            self.player.queueList.previous()
+        elif key == keyboard.Key.media_next:
+            self.player.queueList.next()
 
 
 class aboutDialog(QtWidgets.QDialog):
