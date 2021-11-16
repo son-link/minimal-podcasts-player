@@ -82,13 +82,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         )
         self.actionConfig.triggered.connect(self.showConfDialog)
         self.menu.addAction(self.actionConfig)
-        
+
         self.actionImport = QtWidgets.QAction(
-            _translate('MainWindow', 'Import suscriptions'),
+            _translate('MainWindow', 'Import subscriptions'),
             self
         )
         self.actionImport.triggered.connect(self.import_opml)
         self.menu.addAction(self.actionImport)
+
+        self.actionExport = QtWidgets.QAction(
+            _translate('MainWindow', 'Export subscriptions'),
+            self
+        )
+        self.actionExport.triggered.connect(self.export_opml)
+        self.menu.addAction(self.actionExport)
 
         self.actionAbout = QtWidgets.QAction(
             _translate('MainWindow', 'About'),
@@ -665,6 +672,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             import_thread = opml.import_subs(self, opmlfile)
             import_thread.end.connect(self.reloadPCList)
             import_thread.start()
+
+    def export_opml(self):
+        opmlfile, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            _translate('MainWindow', 'Export OPML file'),
+            '',
+            _translate('MainWindow', 'OPML (*.opml)'),
+        )
+
+        if opmlfile:
+            export_thread = opml.export_subs(self, opmlfile)
+            #import_thread.end.connect(self.reloadPCList)
+            export_thread.start()
 
 
 class aboutDialog(QtWidgets.QDialog):
