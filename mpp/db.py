@@ -61,7 +61,7 @@ class getEpisodes(QThread):
     """ Obtain the podcast's episodes"""
     episodes = pyqtSignal(dict)
 
-    def __init__(self, parent, idPodcast, offset=1, limit=20):
+    def __init__(self, parent, idPodcast, offset=0, limit=20):
         """ Init getEpisodes thread
             Parameters
             ----------

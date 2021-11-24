@@ -381,7 +381,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
                 totalEpisodes / self.config['episodes_per_page']
             )
 
-        offset = (self.currentPage * self.config['episodes_per_page']) + 1
+        offset = (self.currentPage * self.config['episodes_per_page'])
         self.podcastDesc.setText(description)
         thread = db.getEpisodes(
             self,
