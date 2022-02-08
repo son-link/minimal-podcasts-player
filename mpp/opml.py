@@ -1,10 +1,8 @@
 from opyml import OPML, Outline
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import (
     QCoreApplication,
     pyqtSignal,
-    QThread,
-    QVariant
+    QThread
 )
 from .utils import verifyFeed, getAppDataDir
 from . import db
