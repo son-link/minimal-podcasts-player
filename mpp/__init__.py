@@ -27,7 +27,6 @@ from . import download
 from . import opml
 from time import sleep
 from sys import exit as sysExit
-from pynput import keyboard
 
 import re
 import os
@@ -154,13 +153,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.queueNextBtn.clicked.connect(self.player.queueList.next)
 
         # Multimedia keys
-        '''self.playBtn.setShortcut(Qt.Key_MediaPlay)
+        self.playBtn.setShortcut(Qt.Key_MediaPlay)
         self.stopBtn.setShortcut(Qt.Key_MediaStop)
         self.queuePrevBtn.setShortcut(Qt.Key_MediaPrevious)
-        self.queueNextBtn.setShortcut(Qt.Key_MediaNext)'''
-
-        listener = keyboard.Listener(on_press=self.on_press)
-        listener.start()
+        self.queueNextBtn.setShortcut(Qt.Key_MediaNext)
 
         self.prevDataBtn.clicked.connect(self.paginationPrev)
         self.nextDataBtn.clicked.connect(self.paginationNext)
@@ -364,6 +360,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         self.podcastWeb.setText(
             '<a href="{0}">{0}</a>'.format(info['pageUrl'])
         )
+
         description = re.sub(
             r'(https?:\/\/[^\s]+)', r'<a href="\g<0>">\g<0></a>',
             info['description']
@@ -383,23 +380,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
 
         offset = (self.currentPage * self.config['episodes_per_page'])
         self.podcastDesc.setText(description)
+
         thread = db.getEpisodes(
             self,
             idPodcast,
             offset,
             self.config['episodes_per_page']
         )
+
         thread.episodes.connect(self.insertEpisode)
         thread.start()
         self.podcastSelected = idPodcast
         self.paginationLabel.setText(
-                _translate(
-                    'MainWindow',
-                    'Page {0} of {1}'
-                ).format(self.currentPage+1, self.totalPages)
-            )
+            _translate(
+                'MainWindow',
+                'Page {0} of {1}'
+            ).format(self.currentPage+1, self.totalPages)
+        )
 
     def insertEpisode(self, data, preppend=False):
+        """ Insert episode on the episodes list
+            Args:
+                data : object
+                    The episode data
+                preppend : boolean
+                    If true, it is added at the beginning          
+        """
         btnWidget = QtWidgets.QWidget()
         btnLayout = QtWidgets.QHBoxLayout()
 
@@ -448,16 +454,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             0,
             QtWidgets.QTableWidgetItem(title)
         )
+
         self.episodesTable.setItem(
             pos,
             1,
             QtWidgets.QTableWidgetItem(data['date_format'])
         )
+
         self.episodesTable.setItem(
             pos,
             2,
             QtWidgets.QTableWidgetItem(str(data['totalTime']))
         )
+
         self.episodesTable.setCellWidget(pos, 3, btnWidget)
 
         header = self.episodesTable.horizontalHeader()
@@ -469,39 +478,59 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         # self.episodesTable.resizeRowsToContents()
 
     def getEpisodeData(self, item):
+        """ Get the episode data selected in the playlist
+            and show in the right widget
+            Args:
+                item : object
+                    The episode selected
+        """
         row = item.row()
         data = self.player.queueData[row]
         description = '<h3>%s</h3>' % data['title']
+
         description += _translate(
             'MainWindow',
             '<p>Subido el {}</p>'.format(data['date'])
         )
+
         description += data['description']
         self.infoEpisodeLabel.setText(description)
 
     def episodesMenu(self, event):
+        """ Show a menu on the episodes list when you click
+        on one with the right mouse button
+            Args:
+                event : object
+                    The event
+        """
         menu = QtWidgets.QMenu(self.episodesTable)
         addIcon = QIcon.fromTheme('list-add')
+
         addAction = QtWidgets.QAction(
             addIcon,
             _translate('MainWindow', 'Add to queue'),
             self
         )
+
         addAction.triggered.connect(self.getEpisodesSelecteds)
         menu.addAction(addAction)
 
         downIcon = QIcon.fromTheme('go-down')
+
         downAction = QtWidgets.QAction(
             downIcon,
             _translate('MainWindow', 'Add to download queue'),
             self
         )
+
         downAction.triggered.connect(self.addDownloads)
         menu.addAction(downAction)
-        # add other required actions
         menu.popup(QCursor.pos())
 
     def getEpisodesSelecteds(self):
+        """
+        Get the episodes selected    
+        """
         model = self.episodesTable.selectionModel()
         rows = model.selectedRows()
         rows.sort()
@@ -510,9 +539,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.add2queue(None, pos)
 
     def getNewEpisodes(self):
+        """
+        Call the thread for get new episodes
+        """
         self.statusBar().showMessage(
             _translate('MainWindow', 'Searching new episodes....')
         )
+
         thread = db.updateEpisodes(self, self.podcastSelected, True)
         thread.newEpisodes.connect(self.updateEpisodesList)
         thread.end.connect(self.reloadPCList)
@@ -687,18 +720,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
 
         if opmlfile:
             export_thread = opml.export_subs(self, opmlfile)
-            #import_thread.end.connect(self.reloadPCList)
             export_thread.start()
-            
-    def on_press(self, key):
-        if key == keyboard.Key.media_play_pause:
-            self.player.playPause()
-        elif key == keyboard.Key.media_stop:
-            self.player.stop()
-        elif key == keyboard.Key.media_previous:
-            self.player.queueList.previous()
-        elif key == keyboard.Key.media_next:
-            self.player.queueList.next()
 
 
 class aboutDialog(QtWidgets.QDialog):
