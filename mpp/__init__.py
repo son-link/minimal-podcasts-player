@@ -542,6 +542,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
         """
         Call the thread for get new episodes
         """
+        self.actionUpdate.setEnabled(False)
         self.statusBar().showMessage(
             _translate('MainWindow', 'Searching new episodes....')
         )
@@ -558,6 +559,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             thread.start()
 
         self.statusBar().showMessage('')
+        self.actionUpdate.setEnabled(True)
         self.podcastsList.repaint()
 
     def queueMenu(self, event):
@@ -688,10 +690,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_gui.Ui_MainWindow):
             self.isMWShow = True
 
     def closeEvent(self, event):
-        if ('disable_quit_dialog' in self.config and
+        if ('disable_quit_dialog' not in self.config or
                 not self.config['disable_quit_dialog']):
             event.ignore()
             confirmClose.confirmDialog(self)
+        else:
+            sysExit()
 
     def showAboutDialog(self):
         dialog = aboutDialog(self)
